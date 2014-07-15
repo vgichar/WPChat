@@ -1,0 +1,69 @@
+﻿<phone:PhoneApplicationPage
+    x:Class="WPChat.ChatPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    mc:Ignorable="d"
+    shell:SystemTray.IsVisible="True"
+    Style="{StaticResource TransitionPageStyle}" Loaded="PhoneApplicationPage_Loaded">
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot" Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--TitlePanel contains the name of the application and page title-->
+        <StackPanel Grid.Row="0" Margin="12,17,0,28">
+            <TextBlock Text="{Binding Path=LocalizedResources.ApplicationTitle, Source={StaticResource LocalizedStrings}}" Style="{StaticResource PhoneTextNormalStyle}"/>
+            <TextBlock Name="tbTitle" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+            <TextBlock Name="tbStats" Margin="9,-7,0,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
+        </StackPanel>
+
+        <!--ContentPanel - place additional content here-->
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="0.6*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <phone:LongListSelector Name="llsMessages" Grid.Row="0" ItemsSource="{Binding Path=Messages}" >
+                <phone:LongListSelector.ItemTemplate>
+                    <DataTemplate >
+                        <StackPanel Margin="10" Width="250" HorizontalAlignment="{Binding Path=From, Converter={StaticResource MessagesAlignmentConverter}}" Loaded="StackPanel_Loaded">
+                            <TextBlock Name="tbFrom" Text="{Binding Path=From}" Style="{StaticResource PhoneTextSubtleStyle}" TextWrapping="Wrap"/>
+                            <TextBlock Name="tbText" Text="{Binding Path=Text}" Style="{StaticResource PhoneTextNormalStyle}" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </phone:LongListSelector.ItemTemplate>
+            </phone:LongListSelector>
+            <TextBox Name="tbMessage" Grid.Row="1" MaxLength="150" TextWrapping="Wrap" KeyUp="TextBox_KeyUp"/>
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Name="tbRemainingChar" Text="150 characters remaining" FontSize="25" VerticalAlignment="Center"/>
+                <Button Grid.Column="1" Content="Send" Tap="sendButton_Tap" Margin="5" Width="150" HorizontalAlignment="Right" HorizontalContentAlignment="Center"/>
+            </Grid>
+        </Grid>
+    </Grid>
+    
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar>
+            <shell:ApplicationBarIconButton  Text="details" IconUri="/Assets/AppBar/edit.png" Click="ApplicationBarIconButton_ClickDetails"/>
+            <shell:ApplicationBarIconButton  Text="delete" IconUri="/Assets/AppBar/delete.png" Click="ApplicationBarIconButton_ClickDelete"/>
+            <shell:ApplicationBarIconButton  Text="logout" IconUri="/Assets/AppBar/logout.png" Click="ApplicationBarIconButton_ClickLogout"/>
+            <shell:ApplicationBarIconButton  Text="exit" IconUri="/Assets/AppBar/stop.png" Click="ApplicationBarIconButton_ClickExit"/>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
+
+</phone:PhoneApplicationPage>

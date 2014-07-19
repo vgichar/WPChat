@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace WPChat.ViewModels
 {
@@ -72,13 +73,16 @@ namespace WPChat.ViewModels
         {
             get
             {
-                List<RoomItem> list = _rooms.ToList();
-                list.OrderBy(x => x.Users.Count).ThenBy(x => x.Name);
-                _rooms.Clear();
-
-                foreach (RoomItem ui in list)
+                if (_rooms != null)
                 {
-                    _rooms.Add(ui);
+                    List<RoomItem> list = _rooms.ToList();
+                    list.OrderBy(x => x.Users.Count).ThenBy(x => x.Name);
+                    _rooms.Clear();
+
+                    foreach (RoomItem ui in list)
+                    {
+                        _rooms.Add(ui);
+                    }
                 }
                 return _rooms;
             }
@@ -89,19 +93,7 @@ namespace WPChat.ViewModels
             }
         }
 
-        private ObservableCollection<MessageItem> _messages;
-        public ObservableCollection<MessageItem> Messages
-        {
-            get
-            {
-                return _messages;
-            }
-            set
-            {
-                _messages = value;
-                RaisePropertyChanged("Messages");
-            }
-        }
+        private ObservableCollection<MessageItem> Messages;
 
         private ObservableCollection<UserItem> _friends;
         public ObservableCollection<UserItem> Friends
@@ -130,6 +122,7 @@ namespace WPChat.ViewModels
             Username = "";
             Password = "";
             IsLoggedIn = false;
+            Status = StatusIndicator.Online;
             Friends = new ObservableCollection<UserItem>();
             Rooms = new ObservableCollection<RoomItem>();
             Messages = new ObservableCollection<MessageItem>();
@@ -317,6 +310,10 @@ namespace WPChat.ViewModels
             // notify server
             // /TODO
 
+            if (ri.Users == null) {
+                ri.Users = new ObservableCollection<UserItem>();
+            }
+
             ri.Users.Add(new UserItem() {
                 Username = this.Username,
                 Status = this.Status,
@@ -340,38 +337,40 @@ namespace WPChat.ViewModels
             });
         }
 
-        public void RoomCreated(string name)
-        {
-            this.Rooms.Add(new RoomItem()
-            {
-                Name = name,
-                Users = new ObservableCollection<UserItem>(),
-                Messages = new ObservableCollection<MessageItem>()
-            });
-        }
-
         public async void CreateRoom(string name, Action callback)
         {
             bool isCreated = await App.Hub.Invoke<bool>("CreateRoom", name);
-
+            if (!isCreated) {
+                MessageBox.Show("Room already exists!\nPlease try another name", "Room Exists!", MessageBoxButton.OK);
+            }
+            else
+            {
+                Rooms.Add(new RoomItem() {
+                    Name = name,
+                    Users = new ObservableCollection<UserItem>(),
+                    Messages = new ObservableCollection<MessageItem>()
+                });
+            }
             callback.Invoke();
         }
         public async void ChangeStatus(StatusIndicator status)
         {
-            await App.Hub.Invoke<bool>("ChangeStatus", this.Username, status);
+            await App.Hub.Invoke<bool>("ChangeStatus", status);
         }
 
         public async void Logout()
         {
-            await App.Hub.Invoke<bool>("Logout", this.Username);
+            await App.Hub.Invoke<bool>("Logout");
         }
 
         public async void Login(string username, string password, Action callback)
         {
             this.IsLoggedIn = await App.Hub.Invoke<bool>("Login", username, password);
 
-            if (this.IsLoggedIn) {
-                ChangeStatus(this.Status);
+            if (this.IsLoggedIn)
+            {
+                this.Username = username;
+                this.Password = password;
             }
 
             callback.Invoke();

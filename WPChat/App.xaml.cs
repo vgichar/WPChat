@@ -12,6 +12,8 @@ using System.IO;
 using WPChat.ViewModels;
 using Microsoft.AspNet.SignalR.Client;
 using System.Windows.Threading;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace WPChat
 {
@@ -201,11 +203,62 @@ namespace WPChat
             Connection = new HubConnection(_serverUrl);
             Hub = Connection.CreateHubProxy(_hubName);
 
-            Hub.On("RoomCreated", (string name) =>
+            Hub.On("onUserStatus", (StatusIndicator status) =>
             {
                 Dispatcher.BeginInvoke(() =>
                 {
-                    App.User.RoomCreated(name);
+                    App.User.Status = status;
+                });
+            });
+
+            Hub.On("onUserFriends", (List<OwnerUserItem> friends) =>
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    foreach (OwnerUserItem oui in friends) {
+                        App.User.Friends.Add(new UserItem() {
+                            Username = oui.Username,
+                            Status = oui.Status,
+                            Messages = new ObservableCollection<MessageItem>(),
+                            Rooms = new ObservableCollection<RoomItem>()
+                        });
+                    }
+                });
+            });
+
+            Hub.On("onUserRooms", (List<RoomItem> rooms) =>
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    foreach (RoomItem ri in rooms)
+                    {
+                        App.User.Rooms.Add(new RoomItem()
+                        {
+                            Name = ri.Name
+                            Messages = ri.Messages
+                        });
+                    }
+                });
+            });
+
+            Hub.On("onUserMessages", (List<MessageItem> messages) =>
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    messages.ForEach((message) =>
+                    {
+                        string friendName = message.From;
+                        if (message.From == App.User.Username) {
+                            friendName = message.To;
+                        }
+
+                        foreach (UserItem ui in App.User.Friends) {
+                            if (ui.Username == friendName) {
+                                message.Link = ui;
+                                ui.Messages.Add(message);
+                            }
+                        }
+                    });
                 });
             });
 
@@ -221,8 +274,6 @@ namespace WPChat
                     App.Current.Terminate();
                 }
             }
-
-            //bool result = await hub.Invoke<bool>("getBool");
         }
 
         #endregion

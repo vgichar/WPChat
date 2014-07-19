@@ -24,18 +24,6 @@ namespace WPChat
 
             // Set DataContext as OwnerUser
             this.DataContext = App.User;
-
-            //HubConnection connection = new HubConnection("http://localhost/myWeb/myHub");
-            //IHubProxy myHub = connection.CreateHubProxy("myHub");
-
-            //myHub.On<string, bool>("CreateRoom", (string roomName, bool isPrivate) =>
-            //{
-
-            //});
-
-            //connection.Start().Wait();
-
-            //myHub.Invoke("registerAsLoggedIn", "myUsername");
         }
 
         // on page load

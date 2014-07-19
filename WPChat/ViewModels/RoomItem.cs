@@ -29,12 +29,16 @@ namespace WPChat.ViewModels
         {
             get
             {
-                List<UserItem> list = _users.ToList();
-                list.OrderBy(x=>x.Status).ThenBy(x=>x.Username);
-                _users.Clear();
+                if (_users != null)
+                {
+                    List<UserItem> list = _users.ToList();
+                    list.OrderBy(x => x.Status).ThenBy(x => x.Username);
+                    _users.Clear();
 
-                foreach (UserItem ui in list) {
-                    _users.Add(ui);
+                    foreach (UserItem ui in list)
+                    {
+                        _users.Add(ui);
+                    }
                 }
                 return _users;
             }

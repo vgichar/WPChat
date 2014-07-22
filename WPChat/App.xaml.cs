@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Diagnostics;
 using System.Resources;
 using System.Windows;
@@ -203,62 +204,18 @@ namespace WPChat
             Connection = new HubConnection(_serverUrl);
             Hub = Connection.CreateHubProxy(_hubName);
 
-            Hub.On("onUserStatus", (StatusIndicator status) =>
+            Dispatcher.BeginInvoke(() =>
             {
-                Dispatcher.BeginInvoke(() =>
-                {
-                    App.User.Status = status;
-                });
-            });
-
-            Hub.On("onUserFriends", (List<OwnerUserItem> friends) =>
-            {
-                Dispatcher.BeginInvoke(() =>
-                {
-                    foreach (OwnerUserItem oui in friends) {
-                        App.User.Friends.Add(new UserItem() {
-                            Username = oui.Username,
-                            Status = oui.Status,
-                            Messages = new ObservableCollection<MessageItem>(),
-                            Rooms = new ObservableCollection<RoomItem>()
-                        });
-                    }
-                });
-            });
-
-            Hub.On("onUserRooms", (List<RoomItem> rooms) =>
-            {
-                Dispatcher.BeginInvoke(() =>
-                {
-                    foreach (RoomItem ri in rooms)
+                Hub.On("ReceiveMessage", (MessageItem mi)=>{
+                    Debug.WriteLine(mi.Text);
+                    if (mi.Type == DataContextType.User)
                     {
-                        App.User.Rooms.Add(new RoomItem()
-                        {
-                            Name = ri.Name
-                            Messages = ri.Messages
-                        });
+                        App.User.Friends.First(x => x.Username == mi.From).Messages.Add(mi);
                     }
-                });
-            });
-
-            Hub.On("onUserMessages", (List<MessageItem> messages) =>
-            {
-                Dispatcher.BeginInvoke(() =>
-                {
-                    messages.ForEach((message) =>
+                    else
                     {
-                        string friendName = message.From;
-                        if (message.From == App.User.Username) {
-                            friendName = message.To;
-                        }
-
-                        foreach (UserItem ui in App.User.Friends) {
-                            if (ui.Username == friendName) {
-                                message.Link = ui;
-                                ui.Messages.Add(message);
-                            }
-                        }
-                    });
+                        App.User.Rooms.First(x => x.Name == mi.From).Messages.Add(mi);
+                    }
                 });
             });
 

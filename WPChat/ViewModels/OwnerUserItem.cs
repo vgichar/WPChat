@@ -84,6 +84,10 @@ namespace WPChat.ViewModels
                         _rooms.Add(ui);
                     }
                 }
+                else
+                {
+                    _rooms = new ObservableCollection<RoomItem>();
+                }
                 return _rooms;
             }
             set
@@ -93,20 +97,25 @@ namespace WPChat.ViewModels
             }
         }
 
-        private ObservableCollection<MessageItem> Messages;
-
         private ObservableCollection<UserItem> _friends;
         public ObservableCollection<UserItem> Friends
         {
             get
             {
-                List<UserItem> list = _friends.ToList();
-                list.OrderBy(x => x.Status).ThenBy(x => x.Username);
-                _friends.Clear();
-
-                foreach (UserItem ui in list)
+                if (_friends != null)
                 {
-                    _friends.Add(ui);
+                    List<UserItem> list = _friends.ToList();
+                    list.OrderBy(x => x.Status).ThenBy(x => x.Username);
+                    _friends.Clear();
+
+                    foreach (UserItem ui in list)
+                    {
+                        _friends.Add(ui);
+                    }
+                }
+                else 
+                {
+                    _friends = new ObservableCollection<UserItem>();
                 }
                 return _friends;
             }
@@ -125,7 +134,6 @@ namespace WPChat.ViewModels
             Status = StatusIndicator.Online;
             Friends = new ObservableCollection<UserItem>();
             Rooms = new ObservableCollection<RoomItem>();
-            Messages = new ObservableCollection<MessageItem>();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -250,127 +258,80 @@ namespace WPChat.ViewModels
             });
         }
 
-        public void sendMessage(MessageItem mi)
+        public async void sendMessage(MessageItem mi)
         {
-            if (mi.Type == DataContextType.Room)
-            {
-                RoomItem i = mi.Link as RoomItem;
-                i.Messages.Add(mi);
+            await App.Hub.Invoke("SendMessage", mi);
 
-                // TEMP
-                i.Messages.Add(new MessageItem()
-                {
-                    From = mi.To,
-                    To = App.User.Username,
-                    Text = "Hello!",
-                    Type = mi.Type,
-                    Link = i
-                });
-                i.Messages.Add(new MessageItem()
-                {
-                    From = mi.To,
-                    To = App.User.Username,
-                    Text = "How Are you?!",
-                    Type = mi.Type,
-                    Link = i
-                });
+            if (mi.Type == DataContextType.User)
+            {
+                Friends.First(x => x.Username == mi.To).Messages.Add(mi);
             }
             else
             {
-                UserItem i = mi.Link as UserItem;
-                i.Messages.Add(mi);
-
-                // TEMP
-                i.Messages.Add(new MessageItem()
-                {
-                    From = mi.To,
-                    To = App.User.Username,
-                    Text = "Hello!",
-                    Type = mi.Type,
-                    Link = i
-                });
-                i.Messages.Add(new MessageItem()
-                {
-                    From = mi.To,
-                    To = App.User.Username,
-                    Text = "How Are you?!",
-                    Type = mi.Type,
-                    Link = i
-                });
+                Rooms.First(x => x.Name == mi.To).Messages.Add(mi);
             }
-
-            // TODO:
-            // send message to server
-            // /TODO
-        }
-
-        public void joinRoom(RoomItem ri)
-        {
-            // TODO:
-            // notify server
-            // /TODO
-
-            if (ri.Users == null) {
-                ri.Users = new ObservableCollection<UserItem>();
-            }
-
-            ri.Users.Add(new UserItem() {
-                Username = this.Username,
-                Status = this.Status,
-                Rooms = this.Rooms,
-                Messages = this.Messages
-            });
-        }
-
-        public void leaveRoom(RoomItem ri)
-        {
-            // TODO:
-            // notify server
-            // /TODO
-
-            ri.Users.Remove(new UserItem()
-            {
-                Username = this.Username,
-                Status = this.Status,
-                Rooms = this.Rooms,
-                Messages = this.Messages
-            });
         }
 
         public async void CreateRoom(string name, Action callback)
         {
-            bool isCreated = await App.Hub.Invoke<bool>("CreateRoom", name);
+            bool isCreated = await App.Hub.Invoke<bool>("CreateRoom", Username, name);
             if (!isCreated) {
                 MessageBox.Show("Room already exists!\nPlease try another name", "Room Exists!", MessageBoxButton.OK);
             }
             else
             {
-                Rooms.Add(new RoomItem() {
+                RoomItem ri = new RoomItem()
+                {
                     Name = name,
                     Users = new ObservableCollection<UserItem>(),
                     Messages = new ObservableCollection<MessageItem>()
-                });
+                };
+                Rooms.Add(ri);
             }
             callback.Invoke();
         }
         public async void ChangeStatus(StatusIndicator status)
         {
-            await App.Hub.Invoke<bool>("ChangeStatus", status);
+            await App.Hub.Invoke<bool>("ChangeStatus", Username, status);
         }
 
         public async void Logout()
         {
-            await App.Hub.Invoke<bool>("Logout");
+            await App.Hub.Invoke<bool>("Logout", Username);
         }
 
         public async void Login(string username, string password, Action callback)
         {
-            this.IsLoggedIn = await App.Hub.Invoke<bool>("Login", username, password);
+            OwnerUserItem oui = await App.Hub.Invoke<OwnerUserItem>("Login", username, password);
 
-            if (this.IsLoggedIn)
+            if (oui != null)
             {
                 this.Username = username;
                 this.Password = password;
+                this.IsLoggedIn = true;
+                this.Status = oui.Status;
+                App.Dispatcher.BeginInvoke(() =>
+                {
+                    this.Friends = new ObservableCollection<UserItem>(oui.Friends);
+                    this.Rooms = new ObservableCollection<RoomItem>(oui.Rooms);
+
+                    foreach (RoomItem ri in this.Rooms)
+                    {
+                        foreach (UserItem ui in this.Friends)
+                        {
+                            if (ri.Users.Contains(ui)) {
+                                RoomItem room = ui.Rooms.First(x => x.Name == ri.Name);
+                                UserItem user = ri.Users.First(x => x.Username == ui.Username);
+
+                                ui.Rooms.Remove(room);
+                                ui.Rooms.Add(ri);
+
+                                ri.Users.Remove(user);
+                                ri.Users.Add(ui);
+                            }
+                        }
+                    }
+                });
             }
 
             callback.Invoke();

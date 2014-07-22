@@ -38,7 +38,6 @@ namespace WPChat
                     if (ri.Name == name) 
                     {
                         DataContext = ri;
-                        App.User.joinRoom(ri);
                         tbStats.Text = string.Format("{0} active users", ri.Users.Count.ToString());
                         break;
                     }
@@ -55,15 +54,6 @@ namespace WPChat
                         break;
                     }
                 }
-            }
-        }
-
-        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
-        {
-            base.OnNavigatingFrom(e);
-
-            if (type == DataContextType.Room) {
-                App.User.leaveRoom((DataContext as RoomItem));
             }
         }
 
@@ -94,7 +84,6 @@ namespace WPChat
                 To = tbTitle.Text,
                 Text = tbMessage.Text,
                 Type = type,
-                Link = DataContext as INotifyPropertyChanged
             });
 
             tbMessage.Text = "";

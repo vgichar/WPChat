@@ -40,6 +40,10 @@ namespace WPChat.ViewModels
                         _users.Add(ui);
                     }
                 }
+                else 
+                {
+                    _users = new ObservableCollection<UserItem>();
+                }
                 return _users;
             }
             set
@@ -54,6 +58,10 @@ namespace WPChat.ViewModels
         {
             get
             {
+                if (_messages == null)
+                {
+                    _messages = new ObservableCollection<MessageItem>();
+                }
                 return _messages;
             }
             set

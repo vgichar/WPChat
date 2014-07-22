@@ -43,13 +43,19 @@ namespace WPChat.ViewModels
         {
             get
             {
-                List<RoomItem> list = _rooms.ToList();
-                list.OrderBy(x => x.Users.Count).ThenBy(x => x.Name);
-                _rooms.Clear();
-
-                foreach (RoomItem ui in list)
+                if (_rooms != null)
                 {
-                    _rooms.Add(ui);
+                    List<RoomItem> list = _rooms.ToList();
+                    list.OrderBy(x => x.Users.Count).ThenBy(x => x.Name);
+                    _rooms.Clear();
+
+                    foreach (RoomItem ui in list)
+                    {
+                        _rooms.Add(ui);
+                    }
+                }
+                else {
+                    _rooms = new ObservableCollection<RoomItem>();
                 }
                 return _rooms;
             }
@@ -65,6 +71,9 @@ namespace WPChat.ViewModels
         {
             get
             {
+                if (_messages == null) {
+                    _messages = new ObservableCollection<MessageItem>();
+                }
                 return _messages;
             }
             set

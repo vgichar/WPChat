@@ -65,20 +65,6 @@ namespace WPChat.ViewModels
             }
         }
 
-        private INotifyPropertyChanged _link;
-        public INotifyPropertyChanged Link
-        {
-            get
-            {
-                return _link;
-            }
-            set
-            {
-                _link = value;
-                RaisePropertyChanged("Link");
-            }
-        }
-
         public MessageItem() {
             From = "";
             To = "";

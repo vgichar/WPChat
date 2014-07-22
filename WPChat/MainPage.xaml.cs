@@ -61,11 +61,6 @@ namespace WPChat
                                         NavigationService.Navigate(new Uri("/LoginPage.xaml", UriKind.RelativeOrAbsolute));
                                     });
                                 }
-                                else
-                                {
-                                    App.User.Username = App.IsolatedStorageSettings["Username"] as string;
-                                    App.User.Password = App.IsolatedStorageSettings["Password"] as string;
-                                }
                             });
                         }
                     };

@@ -232,11 +232,13 @@ namespace WPChat.ViewModels
             return rooms;
         }
 
-        public void addFriend(string username)
+        public async void addFriend(string username)
         {
-            // TODO:
+            // DONE
             // add friend in server
-            // /TODO
+            // DONE
+            await App.Hub.Invoke("AddFriend", Username, username);
+
             this.Friends.Add(new UserItem()
             {
                 Username = username,
@@ -245,11 +247,14 @@ namespace WPChat.ViewModels
             });
         }
 
-        public void addRoom(string name)
+        public async void addRoom(string name)
         {
-            // TODO:
+            // DONE:
             // add fav room in server
-            // /TODO
+            // /DONE
+
+            await App.Hub.Invoke("AddRoom", Username ,name);
+
             this.Rooms.Add(new RoomItem()
             {
                 Name = name,

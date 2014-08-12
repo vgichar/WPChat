@@ -290,6 +290,7 @@ namespace WPChat.ViewModels
             }
             callback.Invoke();
         }
+
         public async void ChangeStatus(StatusIndicator status)
         {
             await App.Hub.Invoke<bool>("ChangeStatus", Username, status);

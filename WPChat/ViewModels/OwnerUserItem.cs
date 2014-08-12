@@ -194,17 +194,10 @@ namespace WPChat.ViewModels
             // /TODO
 
             // TEMP
+
             List<UserItem> users = new List<UserItem>();
-            Random r = new Random();
-            for (int i = 0; i < r.Next(10) + 5; i++)
-            {
-                users.Add(new UserItem()
-                {
-                    Username = name + " " + r.Next(10000),
-                    Status = StatusIndicator.Offline,
-                    Rooms = new ObservableCollection<RoomItem>()
-                });
-            }
+            //List<UserItem> users = App.Hub.Invoke("GetUsersByNameStart", name);
+            // ^ problem
             return users;
         }
 

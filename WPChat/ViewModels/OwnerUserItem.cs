@@ -194,17 +194,10 @@ namespace WPChat.ViewModels
             // /TODO
 
             // TEMP
+
             List<UserItem> users = new List<UserItem>();
-            Random r = new Random();
-            for (int i = 0; i < r.Next(10) + 5; i++)
-            {
-                users.Add(new UserItem()
-                {
-                    Username = name + " " + r.Next(10000),
-                    Status = StatusIndicator.Offline,
-                    Rooms = new ObservableCollection<RoomItem>()
-                });
-            }
+            //List<UserItem> users = App.Hub.Invoke("GetUsersByNameStart", name);
+            // ^ problem
             return users;
         }
 
@@ -232,11 +225,13 @@ namespace WPChat.ViewModels
             return rooms;
         }
 
-        public void addFriend(string username)
+        public async void addFriend(string username)
         {
-            // TODO:
+            // DONE
             // add friend in server
-            // /TODO
+            // DONE
+            await App.Hub.Invoke("AddFriend", Username, username);
+
             this.Friends.Add(new UserItem()
             {
                 Username = username,
@@ -245,11 +240,14 @@ namespace WPChat.ViewModels
             });
         }
 
-        public void addRoom(string name)
+        public async void addRoom(string name)
         {
-            // TODO:
+            // DONE:
             // add fav room in server
-            // /TODO
+            // /DONE
+
+            await App.Hub.Invoke("AddRoom", Username ,name);
+
             this.Rooms.Add(new RoomItem()
             {
                 Name = name,
@@ -290,7 +288,6 @@ namespace WPChat.ViewModels
             }
             callback.Invoke();
         }
-
         public async void ChangeStatus(StatusIndicator status)
         {
             await App.Hub.Invoke<bool>("ChangeStatus", Username, status);

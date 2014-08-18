@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -113,7 +114,7 @@ namespace WPChat.ViewModels
                         _friends.Add(ui);
                     }
                 }
-                else 
+                else
                 {
                     _friends = new ObservableCollection<UserItem>();
                 }
@@ -145,114 +146,88 @@ namespace WPChat.ViewModels
             }
         }
 
-        public UserItem getUserByName(string name)
+        public async void getUserByName(string name, UserItem userItem, Action callback)
         {
+            UserItem ui = await App.Hub.Invoke<UserItem>("GetUserByName", name);
+            userItem = ui;
 
-            // TODO:
-            // get UserItem from server by name
-            // /TODO
+            foreach (RoomItem ri in ui.Rooms) {
+                foreach (RoomItem ori in Rooms) {
+                    if (ri.Name == ori.Name) {
+                        ori.Users.Remove(ori.Users.First(x => x.Username == ui.Username));
+                        ori.Users.Add(ui);
 
-            // TEMP
-            UserItem ui = new UserItem()
-            {
-                Username = name,
-                Status = StatusIndicator.Busy,
-                Rooms = new ObservableCollection<RoomItem>() {
-                    new RoomItem(){
-                        Name = "myRoom",
-                        Users = new ObservableCollection<UserItem>()
+                        ui.Rooms.Remove(ri);
+                        ui.Rooms.Add(ori);
                     }
                 }
-            };
-
-            ui.Rooms.ElementAt(0).Users.Add(ui);
-            return ui;
-        }
-
-        public RoomItem getRoomByName(string name)
-        {
-
-            // TODO:
-            // get RoomItem from server by name
-            // /TODO
-
-            // TEMP
-            RoomItem ri = new RoomItem()
-            {
-                Name = name,
-                Users = new ObservableCollection<UserItem>()
-            };
-
-            return ri;
-        }
-
-        public List<UserItem> getUsersByNameStart(string name)
-        {
-
-            // TODO:
-            // get UserItem from server by name
-            // /TODO
-
-            // TEMP
-
-            List<UserItem> users = new List<UserItem>();
-            //List<UserItem> users = App.Hub.Invoke("GetUsersByNameStart", name);
-            // ^ problem
-            return users;
-        }
-
-        public List<RoomItem> getRoomsByNameStart(string name)
-        {
-
-            // TODO:
-            // get RoomItem from server by name
-            // /TODO
-
-            // TEMP
-            List<RoomItem> rooms = new List<RoomItem>();
-            Random r = new Random();
-            for (int i = 0; i < r.Next(10) + 5; i++)
-            {
-                rooms.Add(new RoomItem()
-                {
-                    Name = name + " " + r.Next(10000),
-                    Users = new ObservableCollection<UserItem>() {
-                        new UserItem(),
-                        new UserItem()
-                    }
-                });
             }
-            return rooms;
+
+            callback();
+        }
+
+        public async void getRoomByName(string name, RoomItem roomItem, Action callback)
+        {
+            RoomItem ri = await App.Hub.Invoke<RoomItem>("GetRoomByName", name);
+            roomItem = ri;
+
+
+
+            foreach (UserItem ui in ri.Users)
+            {
+                foreach (UserItem oui in Friends)
+                {
+                    if (ui.Username == oui.Username)
+                    {
+                        oui.Rooms.Remove(oui.Rooms.First(x => x.Name == ri.Name));
+                        oui.Rooms.Add(ri);
+
+                        ri.Users.Remove(ui);
+                        ri.Users.Add(oui);
+                    }
+                }
+            }
+
+            callback();
+        }
+
+        public async void getUsersByNameStart(string name, IList list, Action callback)
+        {
+            List<UserItem> l = await App.Hub.Invoke<List<UserItem>>("GetUsersByNameStart", name);
+
+            l.ForEach(x => list.Add(x));
+
+            callback();
+        }
+
+        public async void getRoomsByNameStart(string name, IList list, Action callback)
+        {
+            List<RoomItem> l = await App.Hub.Invoke<List<RoomItem>>("GetRoomsByNameStart", name);
+
+            l.ForEach(x => list.Add(x));
+
+            callback();
         }
 
         public async void addFriend(string username)
         {
-            // DONE
-            // add friend in server
-            // DONE
             await App.Hub.Invoke("AddFriend", Username, username);
 
-            this.Friends.Add(new UserItem()
+            UserItem ui = new UserItem();
+            getUserByName(username, ui, () =>
             {
-                Username = username,
-                Status = StatusIndicator.Offline,
-                Rooms = new ObservableCollection<RoomItem>()
+                Friends.Add(ui);
             });
         }
 
         public async void addRoom(string name)
         {
-            // DONE:
-            // add fav room in server
-            // /DONE
+            await App.Hub.Invoke("AddRoom", Username, name);
 
-            await App.Hub.Invoke("AddRoom", Username ,name);
-
-            this.Rooms.Add(new RoomItem()
+            RoomItem ri = new RoomItem();
+            getRoomByName(name, ri, () =>
             {
-                Name = name,
-                Users = new ObservableCollection<UserItem>(),
-                Messages = new ObservableCollection<MessageItem>()
+                Rooms.Add(ri);
             });
         }
 
@@ -273,7 +248,8 @@ namespace WPChat.ViewModels
         public async void CreateRoom(string name, Action callback)
         {
             bool isCreated = await App.Hub.Invoke<bool>("CreateRoom", Username, name);
-            if (!isCreated) {
+            if (!isCreated)
+            {
                 MessageBox.Show("Room already exists!\nPlease try another name", "Room Exists!", MessageBoxButton.OK);
             }
             else
@@ -317,7 +293,8 @@ namespace WPChat.ViewModels
                     {
                         foreach (UserItem ui in this.Friends)
                         {
-                            if (ri.Users.Contains(ui)) {
+                            if (ri.Users.Contains(ui))
+                            {
                                 RoomItem room = ui.Rooms.First(x => x.Name == ri.Name);
                                 UserItem user = ri.Users.First(x => x.Username == ui.Username);
 
@@ -339,7 +316,7 @@ namespace WPChat.ViewModels
         {
             bool isRegistered = await App.Hub.Invoke<bool>("Register", username, password);
 
-            if(isRegistered)
+            if (isRegistered)
             {
                 this.Username = username;
                 this.Password = password;

@@ -72,13 +72,22 @@ namespace WPChat
             }
 
             var name = tbSearchInput.Text;
+
+
             if (type == DataContextType.User)
             {
-                llsUsers.ItemsSource = App.User.getUsersByNameStart(name).OrderBy(x => x.Status).ThenBy(x=>x.Username).ToList();
+                List<UserItem> list = new List<UserItem>();
+                App.User.getUsersByNameStart(name, list, () => {
+                    llsUsers.ItemsSource = list;
+                });
             }
             else
             {
-                llsRooms.ItemsSource = App.User.getRoomsByNameStart(name).OrderBy(x => x.Name).ToList();;
+                List<RoomItem> list = new List<RoomItem>();
+                App.User.getRoomsByNameStart(name, list, () =>
+                {
+                    llsRooms.ItemsSource = list;
+                });
             }
         }
 
@@ -110,10 +119,11 @@ namespace WPChat
         {
             MessageBoxResult mbr = MessageBox.Show(string.Format("Are you sure you want to create new room with name \"{0}\"", tbSearchInput.Text), "Create room?", MessageBoxButton.OKCancel);
 
-            if (mbr == MessageBoxResult.OK) 
+            if (mbr == MessageBoxResult.OK)
             {
                 pbCreateRoom.Visibility = System.Windows.Visibility.Visible;
-                App.User.CreateRoom(tbSearchInput.Text, ()=>{
+                App.User.CreateRoom(tbSearchInput.Text, () =>
+                {
                     pbCreateRoom.Visibility = System.Windows.Visibility.Collapsed;
                 });
                 ApplicationBarIconButton_ClickRooms(sender, e);

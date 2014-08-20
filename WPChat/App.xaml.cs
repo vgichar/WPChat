@@ -109,6 +109,8 @@ namespace WPChat
         // This code will not execute when the application is closing
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
+            User.Logout();
+            Connection.Stop();
             IsolatedStorageSettings.Save();
         }
 
@@ -116,6 +118,8 @@ namespace WPChat
         // This code will not execute when the application is deactivated
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
+            User.Logout();
+            Connection.Stop();
             IsolatedStorageSettings.Save();
         }
 
@@ -200,21 +204,22 @@ namespace WPChat
             }
         }
 
-        private async void InitializeHub() {
+        private async void InitializeHub()
+        {
             Connection = new HubConnection(_serverUrl);
             Hub = Connection.CreateHubProxy(_hubName);
 
-            Dispatcher.BeginInvoke(() =>
+            Hub.On("ReceiveMessage", (MessageItem mi) =>
             {
-                Hub.On("ReceiveMessage", (MessageItem mi)=>{
-                    Debug.WriteLine(mi.Text);
+                Dispatcher.BeginInvoke(() =>
+                {
                     if (mi.Type == DataContextType.User)
                     {
                         App.User.Friends.First(x => x.Username == mi.From).Messages.Add(mi);
                     }
                     else
                     {
-                        App.User.Rooms.First(x => x.Name == mi.From).Messages.Add(mi);
+                        App.User.Rooms.First(x => x.Name == mi.To).Messages.Add(mi);
                     }
                 });
             });
@@ -222,6 +227,17 @@ namespace WPChat
             try
             {
                 await Connection.Start();
+                Connection.StateChanged += (StateChange obj) =>
+                {
+                    if (obj.NewState == ConnectionState.Disconnected)
+                    {
+                        MessageBoxResult mbr = MessageBox.Show("Connection lost, please try later", "No connection!", MessageBoxButton.OK);
+                        if (mbr == MessageBoxResult.OK)
+                        {
+                            App.Current.Terminate();
+                        }
+                    }
+                };
             }
             catch (Exception ex)
             {

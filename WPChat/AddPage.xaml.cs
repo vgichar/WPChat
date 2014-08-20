@@ -26,7 +26,7 @@ namespace WPChat
 
             type = NavigationContext.QueryString["Type"] == "User" ? DataContextType.User : DataContextType.Room;
 
-            tbTitle.Text += string.Format(" {0}", type.ToString());
+            tbTitle.Text = string.Format("Add {0}", type.ToString());
 
             if (type == DataContextType.Room)
             {

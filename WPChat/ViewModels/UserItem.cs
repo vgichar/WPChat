@@ -45,14 +45,7 @@ namespace WPChat.ViewModels
             {
                 if (_rooms != null)
                 {
-                    List<RoomItem> list = _rooms.ToList();
-                    list.OrderBy(x => x.Users.Count).ThenBy(x => x.Name);
-                    _rooms.Clear();
-
-                    foreach (RoomItem ui in list)
-                    {
-                        _rooms.Add(ui);
-                    }
+                    _rooms.OrderBy(x => x.Users.Count).ThenBy(x => x.Name);
                 }
                 else {
                     _rooms = new ObservableCollection<RoomItem>();

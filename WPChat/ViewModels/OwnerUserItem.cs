@@ -216,19 +216,25 @@ namespace WPChat.ViewModels
 
         public async void removeFriend(string username)
         {
-            await App.Hub.Invoke("RemoveFriend", username);
+            bool res = await App.Hub.Invoke<bool>("RemoveFriend", username);
             App.Dispatcher.BeginInvoke(() =>
             {
-                Friends.Remove(Friends.First(x => x.Username == username));
+                if (res)
+                {
+                    Friends.Remove(Friends.First(x => x.Username == username));
+                }
             });
         }
 
         public async void removeRoom(string name)
         {
-            await App.Hub.Invoke("RemoveRoom", name);
+            bool res = await App.Hub.Invoke<bool>("RemoveRoom", name);
             App.Dispatcher.BeginInvoke(() =>
             {
-                Rooms.Remove(Rooms.First(x => x.Name == name));
+                if (res)
+                {
+                    Rooms.Remove(Rooms.First(x => x.Name == name));
+                }
             });
         }
 
@@ -298,7 +304,13 @@ namespace WPChat.ViewModels
 
         public async void ChangeStatus(StatusIndicator status)
         {
-            await App.Hub.Invoke<bool>("ChangeStatus", status);
+            bool res = await App.Hub.Invoke<bool>("ChangeStatus", status);
+            App.Dispatcher.BeginInvoke(() => {
+                if (res)
+                {
+                    this.Status = status;
+                }
+            });
         }
 
         public async void Logout()

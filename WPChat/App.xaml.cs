@@ -224,9 +224,16 @@ namespace WPChat
                 });
             });
 
+            Hub.On("FriendStatusChange", (string friendName, StatusIndicator status) =>
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    App.User.Friends.First(x => x.Username == friendName).Status = status;
+                });
+            });
+
             try
             {
-                await Connection.Start();
                 Connection.StateChanged += (StateChange obj) =>
                 {
                     Dispatcher.BeginInvoke(() =>
@@ -236,8 +243,6 @@ namespace WPChat
                             MessageBoxResult mbr = MessageBox.Show("Connection lost, please try later", "No connection!", MessageBoxButton.OK);
                             if (mbr == MessageBoxResult.OK)
                             {
-                                User.Logout();
-                                Connection.Stop();
                                 App.Current.Terminate();
                             }
                         }
@@ -261,6 +266,7 @@ namespace WPChat
                         }
                     });
                 };
+                await Connection.Start();
             }
             catch (Exception ex)
             {

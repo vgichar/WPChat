@@ -146,8 +146,9 @@ namespace WPChat.ViewModels
                             ori.Users.Remove(ori.Users.First(x => x.Username == ui.Username));
                             ori.Users.Add(ui);
 
-                            ui.Rooms.Remove(ri);
-                            ui.Rooms.Add(ori);
+                            ri.Name = ori.Name;
+                            ri.Users = ori.Users;
+                            ri.Messages = ori.Messages;
                         }
                     }
                 }
@@ -175,8 +176,10 @@ namespace WPChat.ViewModels
                             oui.Rooms.Remove(oui.Rooms.First(x => x.Name == ri.Name));
                             oui.Rooms.Add(ri);
 
-                            ri.Users.Remove(ui);
-                            ri.Users.Add(oui);
+                            ui.Username = oui.Username;
+                            ui.Status = oui.Status;
+                            ui.Messages = oui.Messages;
+                            ui.Rooms = oui.Rooms;
                         }
                     }
                 }
@@ -191,7 +194,7 @@ namespace WPChat.ViewModels
 
         public async void getUsersByNameStart(string name, IList list, Action callback)
         {
-            List<UserItem> l = await App.Hub.Invoke<List<UserItem>>("GetUsersByNameStart", Username, name);
+            List<UserItem> l = await App.Hub.Invoke<List<UserItem>>("GetUsersByNameStart", name);
             App.Dispatcher.BeginInvoke(() =>
             {
                 l.ForEach(x => list.Add(x));
@@ -202,7 +205,7 @@ namespace WPChat.ViewModels
 
         public async void getRoomsByNameStart(string name, IList list, Action callback)
         {
-            List<RoomItem> l = await App.Hub.Invoke<List<RoomItem>>("GetRoomsByNameStart", Username,name);
+            List<RoomItem> l = await App.Hub.Invoke<List<RoomItem>>("GetRoomsByNameStart", name);
             App.Dispatcher.BeginInvoke(() =>
             {
                 l.ForEach(x => list.Add(x));
@@ -213,7 +216,7 @@ namespace WPChat.ViewModels
 
         public async void removeFriend(string username)
         {
-            await App.Hub.Invoke("RemoveFriend", Username, username);
+            await App.Hub.Invoke("RemoveFriend", username);
             App.Dispatcher.BeginInvoke(() =>
             {
                 Friends.Remove(Friends.First(x => x.Username == username));
@@ -222,7 +225,7 @@ namespace WPChat.ViewModels
 
         public async void removeRoom(string name)
         {
-            await App.Hub.Invoke("RemoveRoom", Username, name);
+            await App.Hub.Invoke("RemoveRoom", name);
             App.Dispatcher.BeginInvoke(() =>
             {
                 Rooms.Remove(Rooms.First(x => x.Name == name));
@@ -231,7 +234,7 @@ namespace WPChat.ViewModels
 
         public async void addFriend(string username)
         {
-            await App.Hub.Invoke("AddFriend", Username, username);
+            await App.Hub.Invoke("AddFriend", username);
             App.Dispatcher.BeginInvoke(() =>
             {
                 UserItem ui = new UserItem();
@@ -244,7 +247,7 @@ namespace WPChat.ViewModels
 
         public async void addRoom(string name)
         {
-            await App.Hub.Invoke("AddRoom", Username, name);
+            await App.Hub.Invoke("AddRoom", name);
             App.Dispatcher.BeginInvoke(() =>
             {
                 RoomItem ri = new RoomItem();
@@ -273,7 +276,7 @@ namespace WPChat.ViewModels
 
         public async void CreateRoom(string name, Action callback)
         {
-            bool isCreated = await App.Hub.Invoke<bool>("CreateRoom", Username, name); App.Dispatcher.BeginInvoke(() =>
+            bool isCreated = await App.Hub.Invoke<bool>("CreateRoom", name); App.Dispatcher.BeginInvoke(() =>
              {
                  if (!isCreated)
                  {
@@ -295,12 +298,12 @@ namespace WPChat.ViewModels
 
         public async void ChangeStatus(StatusIndicator status)
         {
-            await App.Hub.Invoke<bool>("ChangeStatus", Username, status);
+            await App.Hub.Invoke<bool>("ChangeStatus", status);
         }
 
         public async void Logout()
         {
-            await App.Hub.Invoke<bool>("Logout", Username);
+            await App.Hub.Invoke<bool>("Logout");
         }
 
         public async void Login(string username, string password, Action callback)

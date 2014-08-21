@@ -229,14 +229,37 @@ namespace WPChat
                 await Connection.Start();
                 Connection.StateChanged += (StateChange obj) =>
                 {
-                    if (obj.NewState == ConnectionState.Disconnected)
+                    Dispatcher.BeginInvoke(() =>
                     {
-                        MessageBoxResult mbr = MessageBox.Show("Connection lost, please try later", "No connection!", MessageBoxButton.OK);
-                        if (mbr == MessageBoxResult.OK)
+                        if (obj.NewState == ConnectionState.Disconnected)
                         {
-                            App.Current.Terminate();
+                            MessageBoxResult mbr = MessageBox.Show("Connection lost, please try later", "No connection!", MessageBoxButton.OK);
+                            if (mbr == MessageBoxResult.OK)
+                            {
+                                User.Logout();
+                                Connection.Stop();
+                                App.Current.Terminate();
+                            }
                         }
-                    }
+                        else if (obj.NewState == ConnectionState.Connected && App.IsolatedStorageSettings.Contains("Username") && App.IsolatedStorageSettings.Contains("Password"))
+                        {
+                            App.User.Login(App.IsolatedStorageSettings["Username"] as string, App.IsolatedStorageSettings["Password"] as string, () =>
+                            {
+                                if (App.User.IsLoggedIn == false)
+                                {
+                                    App.IsolatedStorageSettings.Remove("Username");
+                                    App.IsolatedStorageSettings.Remove("Password");
+
+                                    App.User = new OwnerUserItem();
+
+                                    Dispatcher.BeginInvoke(() =>
+                                    {
+                                        (Application.Current.RootVisual as PhoneApplicationFrame).Navigate(new Uri("/LoginPage.xaml", UriKind.RelativeOrAbsolute));
+                                    });
+                                }
+                            });
+                        }
+                    });
                 };
             }
             catch (Exception ex)

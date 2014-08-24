@@ -101,12 +101,12 @@ namespace WPChat
             {
                 if (type == DataContextType.User)
                 {
-                    App.User.Friends.Remove((UserItem)App.User.Friends.First(x => x.Username == name));
+                    App.User.removeFriend(name);
                     NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.RelativeOrAbsolute));
                 }
                 else
                 {
-                    App.User.Rooms.Remove((RoomItem)App.User.Rooms.First(x => x.Name == name));
+                    App.User.removeRoom(name);
                     NavigationService.Navigate(new Uri("/RoomsPage.xaml", UriKind.RelativeOrAbsolute));
                 }
             }

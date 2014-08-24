@@ -30,7 +30,7 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <phone:LongListSelector Grid.Row="0" Name="llsUsers" ItemsSource="{Binding Path=Users}" >
+            <phone:LongListSelector Grid.Row="0" Name="llsUsers" ItemsSource="{Binding Path=Users}">
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
                         <Border Background="Black" Tap="lss_SelectionChanged" Tag="{Binding Path=Username}">

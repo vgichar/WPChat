@@ -76,14 +76,7 @@ namespace WPChat.ViewModels
             {
                 if (_rooms != null)
                 {
-                    List<RoomItem> list = _rooms.ToList();
-                    list.OrderBy(x => x.Users.Count).ThenBy(x => x.Name);
-                    _rooms.Clear();
-
-                    foreach (RoomItem ui in list)
-                    {
-                        _rooms.Add(ui);
-                    }
+                    _rooms.OrderBy(x => x.Users.Count).ThenBy(x => x.Name);
                 }
                 else
                 {
@@ -105,14 +98,7 @@ namespace WPChat.ViewModels
             {
                 if (_friends != null)
                 {
-                    List<UserItem> list = _friends.ToList();
-                    list.OrderBy(x => x.Status).ThenBy(x => x.Username);
-                    _friends.Clear();
-
-                    foreach (UserItem ui in list)
-                    {
-                        _friends.Add(ui);
-                    }
+                    _friends.OrderBy(x => x.Status).ThenBy(x => x.Username);
                 }
                 else
                 {
@@ -149,186 +135,248 @@ namespace WPChat.ViewModels
         public async void getUserByName(string name, UserItem userItem, Action callback)
         {
             UserItem ui = await App.Hub.Invoke<UserItem>("GetUserByName", name);
-            userItem = ui;
+            App.Dispatcher.BeginInvoke(() =>
+            {
+                foreach (RoomItem ri in ui.Rooms)
+                {
+                    foreach (RoomItem ori in Rooms)
+                    {
+                        if (ri.Name == ori.Name)
+                        {
+                            ori.Users.Remove(ori.Users.First(x => x.Username == ui.Username));
+                            ori.Users.Add(ui);
 
-            foreach (RoomItem ri in ui.Rooms) {
-                foreach (RoomItem ori in Rooms) {
-                    if (ri.Name == ori.Name) {
-                        ori.Users.Remove(ori.Users.First(x => x.Username == ui.Username));
-                        ori.Users.Add(ui);
-
-                        ui.Rooms.Remove(ri);
-                        ui.Rooms.Add(ori);
+                            ri.Name = ori.Name;
+                            ri.Users = ori.Users;
+                            ri.Messages = ori.Messages;
+                        }
                     }
                 }
-            }
 
-            callback();
+                userItem.Username = ui.Username;
+                userItem.Status = ui.Status;
+                userItem.Messages = ui.Messages;
+                userItem.Rooms = ui.Rooms;
+
+                callback.Invoke();
+            });
         }
 
         public async void getRoomByName(string name, RoomItem roomItem, Action callback)
         {
             RoomItem ri = await App.Hub.Invoke<RoomItem>("GetRoomByName", name);
-            roomItem = ri;
-
-
-
-            foreach (UserItem ui in ri.Users)
+            App.Dispatcher.BeginInvoke(() =>
             {
-                foreach (UserItem oui in Friends)
+                foreach (UserItem ui in ri.Users)
                 {
-                    if (ui.Username == oui.Username)
+                    foreach (UserItem oui in Friends)
                     {
-                        oui.Rooms.Remove(oui.Rooms.First(x => x.Name == ri.Name));
-                        oui.Rooms.Add(ri);
+                        if (ui.Username == oui.Username)
+                        {
+                            oui.Rooms.Remove(oui.Rooms.First(x => x.Name == ri.Name));
+                            oui.Rooms.Add(ri);
 
-                        ri.Users.Remove(ui);
-                        ri.Users.Add(oui);
+                            ui.Username = oui.Username;
+                            ui.Status = oui.Status;
+                            ui.Messages = oui.Messages;
+                            ui.Rooms = oui.Rooms;
+                        }
                     }
                 }
-            }
 
-            callback();
+                roomItem.Name = ri.Name;
+                roomItem.Users = ri.Users;
+                roomItem.Messages = ri.Messages;
+
+                callback.Invoke();
+            });
         }
 
         public async void getUsersByNameStart(string name, IList list, Action callback)
         {
             List<UserItem> l = await App.Hub.Invoke<List<UserItem>>("GetUsersByNameStart", name);
+            App.Dispatcher.BeginInvoke(() =>
+            {
+                l.ForEach(x => list.Add(x));
 
-            l.ForEach(x => list.Add(x));
-
-            callback();
+                callback.Invoke();
+            });
         }
 
         public async void getRoomsByNameStart(string name, IList list, Action callback)
         {
             List<RoomItem> l = await App.Hub.Invoke<List<RoomItem>>("GetRoomsByNameStart", name);
+            App.Dispatcher.BeginInvoke(() =>
+            {
+                l.ForEach(x => list.Add(x));
 
-            l.ForEach(x => list.Add(x));
+                callback.Invoke();
+            });
+        }
 
-            callback();
+        public async void removeFriend(string username)
+        {
+            bool res = await App.Hub.Invoke<bool>("RemoveFriend", username);
+            App.Dispatcher.BeginInvoke(() =>
+            {
+                if (res)
+                {
+                    Friends.Remove(Friends.First(x => x.Username == username));
+                }
+            });
+        }
+
+        public async void removeRoom(string name)
+        {
+            bool res = await App.Hub.Invoke<bool>("RemoveRoom", name);
+            App.Dispatcher.BeginInvoke(() =>
+            {
+                if (res)
+                {
+                    Rooms.Remove(Rooms.First(x => x.Name == name));
+                }
+            });
         }
 
         public async void addFriend(string username)
         {
-            await App.Hub.Invoke("AddFriend", Username, username);
-
-            UserItem ui = new UserItem();
-            getUserByName(username, ui, () =>
+            await App.Hub.Invoke("AddFriend", username);
+            App.Dispatcher.BeginInvoke(() =>
             {
-                Friends.Add(ui);
+                UserItem ui = new UserItem();
+                getUserByName(username, ui, () =>
+                {
+                    Friends.Add(ui);
+                });
             });
         }
 
         public async void addRoom(string name)
         {
-            await App.Hub.Invoke("AddRoom", Username, name);
-
-            RoomItem ri = new RoomItem();
-            getRoomByName(name, ri, () =>
+            await App.Hub.Invoke("AddRoom", name);
+            App.Dispatcher.BeginInvoke(() =>
             {
-                Rooms.Add(ri);
+                RoomItem ri = new RoomItem();
+                getRoomByName(name, ri, () =>
+                {
+                    Rooms.Add(ri);
+                });
             });
         }
 
         public async void sendMessage(MessageItem mi)
         {
             await App.Hub.Invoke("SendMessage", mi);
-
-            if (mi.Type == DataContextType.User)
+            App.Dispatcher.BeginInvoke(() =>
             {
-                Friends.First(x => x.Username == mi.To).Messages.Add(mi);
-            }
-            else
-            {
-                Rooms.First(x => x.Name == mi.To).Messages.Add(mi);
-            }
+                if (mi.Type == DataContextType.User)
+                {
+                    Friends.First(x => x.Username == mi.To).Messages.Add(mi);
+                }
+                else
+                {
+                    Rooms.First(x => x.Name == mi.To).Messages.Add(mi);
+                }
+            });
         }
 
         public async void CreateRoom(string name, Action callback)
         {
-            bool isCreated = await App.Hub.Invoke<bool>("CreateRoom", Username, name);
-            if (!isCreated)
-            {
-                MessageBox.Show("Room already exists!\nPlease try another name", "Room Exists!", MessageBoxButton.OK);
-            }
-            else
-            {
-                RoomItem ri = new RoomItem()
-                {
-                    Name = name,
-                    Users = new ObservableCollection<UserItem>(),
-                    Messages = new ObservableCollection<MessageItem>()
-                };
-                Rooms.Add(ri);
-            }
-            callback.Invoke();
+            bool isCreated = await App.Hub.Invoke<bool>("CreateRoom", name); App.Dispatcher.BeginInvoke(() =>
+             {
+                 if (!isCreated)
+                 {
+                     MessageBox.Show("Room already exists!\nPlease try another name", "Room Exists!", MessageBoxButton.OK);
+                 }
+                 else
+                 {
+                     RoomItem ri = new RoomItem()
+                     {
+                         Name = name,
+                         Users = new ObservableCollection<UserItem>(),
+                         Messages = new ObservableCollection<MessageItem>()
+                     };
+                     Rooms.Add(ri);
+                 }
+                 callback.Invoke();
+             });
         }
+
         public async void ChangeStatus(StatusIndicator status)
         {
-            await App.Hub.Invoke<bool>("ChangeStatus", Username, status);
+            bool res = await App.Hub.Invoke<bool>("ChangeStatus", status);
+            App.Dispatcher.BeginInvoke(() => {
+                if (res)
+                {
+                    this.Status = status;
+                }
+            });
         }
 
         public async void Logout()
         {
-            await App.Hub.Invoke<bool>("Logout", Username);
+            await App.Hub.Invoke<bool>("Logout");
         }
 
         public async void Login(string username, string password, Action callback)
         {
             OwnerUserItem oui = await App.Hub.Invoke<OwnerUserItem>("Login", username, password);
-
-            if (oui != null)
+            App.Dispatcher.BeginInvoke(() =>
             {
-                this.Username = username;
-                this.Password = password;
-                this.IsLoggedIn = true;
-                this.Status = oui.Status;
-                App.Dispatcher.BeginInvoke(() =>
+                if (oui != null)
                 {
-                    this.Friends = new ObservableCollection<UserItem>(oui.Friends);
-                    this.Rooms = new ObservableCollection<RoomItem>(oui.Rooms);
-
-                    foreach (RoomItem ri in this.Rooms)
+                    this.Username = username;
+                    this.Password = password;
+                    this.IsLoggedIn = true;
+                    this.Status = oui.Status;
+                    App.Dispatcher.BeginInvoke(() =>
                     {
-                        foreach (UserItem ui in this.Friends)
+                        this.Friends = new ObservableCollection<UserItem>(oui.Friends);
+                        this.Rooms = new ObservableCollection<RoomItem>(oui.Rooms);
+
+                        foreach (RoomItem ri in this.Rooms)
                         {
-                            if (ri.Users.Contains(ui))
+                            foreach (UserItem ui in this.Friends)
                             {
-                                RoomItem room = ui.Rooms.First(x => x.Name == ri.Name);
-                                UserItem user = ri.Users.First(x => x.Username == ui.Username);
+                                if (ri.Users.Contains(ui))
+                                {
+                                    RoomItem room = ui.Rooms.First(x => x.Name == ri.Name);
+                                    UserItem user = ri.Users.First(x => x.Username == ui.Username);
 
-                                ui.Rooms.Remove(room);
-                                ui.Rooms.Add(ri);
+                                    ui.Rooms.Remove(room);
+                                    ui.Rooms.Add(ri);
 
-                                ri.Users.Remove(user);
-                                ri.Users.Add(ui);
+                                    ri.Users.Remove(user);
+                                    ri.Users.Add(ui);
+                                }
                             }
                         }
-                    }
-                });
-            }
+                    });
+                }
 
-            callback.Invoke();
+                callback.Invoke();
+            });
         }
 
         public async void Register(string username, string password, Action callback)
         {
             bool isRegistered = await App.Hub.Invoke<bool>("Register", username, password);
-
-            if (isRegistered)
+            App.Dispatcher.BeginInvoke(() =>
             {
-                this.Username = username;
-                this.Password = password;
-                this.Status = StatusIndicator.Online;
-            }
-            else
-            {
-                this.Username = "";
-                this.Password = "";
-            }
+                if (isRegistered)
+                {
+                    this.Username = username;
+                    this.Password = password;
+                    this.Status = StatusIndicator.Online;
+                }
+                else
+                {
+                    this.Username = "";
+                    this.Password = "";
+                }
 
-            callback.Invoke();
+                callback.Invoke();
+            });
         }
     }
 }

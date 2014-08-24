@@ -42,29 +42,6 @@ namespace WPChat
                 {
                     NavigationService.Navigate(new Uri("/LoginPage.xaml", UriKind.Relative));
                 }
-                else
-                {
-                    App.Connection.StateChanged += (StateChange obj) =>
-                    {
-                        if (obj.NewState == ConnectionState.Connected)
-                        {
-                            App.User.Login(App.IsolatedStorageSettings["Username"] as string, App.IsolatedStorageSettings["Password"] as string, () => {
-                                if (App.User.IsLoggedIn == false)
-                                {
-                                    App.IsolatedStorageSettings.Remove("Username");
-                                    App.IsolatedStorageSettings.Remove("Password");
-
-                                    App.User = new OwnerUserItem();
-
-                                    Dispatcher.BeginInvoke(() =>
-                                    {
-                                        NavigationService.Navigate(new Uri("/LoginPage.xaml", UriKind.RelativeOrAbsolute));
-                                    });
-                                }
-                            });
-                        }
-                    };
-                }
             }
         }
 

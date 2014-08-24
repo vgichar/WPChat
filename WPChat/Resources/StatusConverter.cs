@@ -13,6 +13,7 @@ namespace WPChat.Resources
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             string status = value.ToString();
+            Console.WriteLine(status);
             if (status == "Online")
             {
                 return new SolidColorBrush(Colors.Green);

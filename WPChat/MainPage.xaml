@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
@@ -20,13 +21,24 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
         <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel Grid.Row="0" Margin="12,17,0,28">
+        <StackPanel Grid.Row="0" Margin="12,17,0,28" Grid.ColumnSpan="2">
             <TextBlock Text="{Binding Path=LocalizedResources.ApplicationTitle,  Source={StaticResource LocalizedStrings}}" Style="{StaticResource PhoneTextNormalStyle}"/>
             <TextBlock Text="Friends" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
-
+        <StackPanel Grid.Column="1" Grid.Row="0" >
+            <toolkit:ListPicker Margin="55,10,10, 0" Background="{Binding Path=Status, Converter={StaticResource StatusConverter}}">
+                <toolkit:ListPickerItem Content="Online"></toolkit:ListPickerItem>
+                <toolkit:ListPickerItem Content="Away"></toolkit:ListPickerItem>
+                <toolkit:ListPickerItem Content="Busy"></toolkit:ListPickerItem>
+                <toolkit:ListPickerItem Content="Offline"></toolkit:ListPickerItem>
+            </toolkit:ListPicker>
+        </StackPanel>
+        
         <!--ContentPanel contains LongListSelector and LongListSelector ItemTemplate. Place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <phone:LongListSelector x:Name="llsFriends" Margin="0,0,-12,0" ItemsSource="{Binding Path=Friends}">

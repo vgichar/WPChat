@@ -34,15 +34,6 @@ namespace WPChat
             // clear BackStack
             while (NavigationService.BackStack.Count() > 0)
                 NavigationService.RemoveBackEntry();
-
-            // if user is not logged in => redirect to login page
-            if (!App.User.IsLoggedIn)
-            {
-                if (!App.IsolatedStorageSettings.Contains("Username") || !App.IsolatedStorageSettings.Contains("Password"))
-                {
-                    NavigationService.Navigate(new Uri("/LoginPage.xaml", UriKind.Relative));
-                }
-            }
         }
 
         // On list item click => open chat room
@@ -83,6 +74,20 @@ namespace WPChat
         private void ApplicationBarIconButton_ClickRooms(object sender, EventArgs e)
         {
             NavigationService.Navigate(new Uri("/RoomsPage.xaml", UriKind.RelativeOrAbsolute));
+        }
+
+        private void ListPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ListPicker lp = sender as ListPicker;
+
+            
+            foreach (StatusIndicator si in Enum.GetValues(typeof(StatusIndicator)))
+            {
+                if (si.ToString() == (lp.SelectedItem as ListPickerItem).Tag.ToString())
+                {
+                    App.User.ChangeStatus(si);
+                }
+            }
         }
     }
 }

@@ -10,6 +10,7 @@
     <Application.Resources>
         <local:LocalizedStrings xmlns:local="clr-namespace:WPChat" x:Key="LocalizedStrings"/>
         <local:StatusConverter xmlns:local="clr-namespace:WPChat.Resources" x:Key="StatusConverter"/>
+        <local:ActiveStatusConverter xmlns:local="clr-namespace:WPChat.Resources" x:Key="ActiveStatusConverter"/>
         <local:MessagesAlignmentConverter xmlns:local="clr-namespace:WPChat.Resources" x:Key="MessagesAlignmentConverter"/>
         
         <ControlTemplate x:Key="StatusIndicatorControl" TargetType="Button">

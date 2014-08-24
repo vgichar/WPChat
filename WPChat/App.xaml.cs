@@ -109,7 +109,6 @@ namespace WPChat
         // This code will not execute when the application is closing
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
-            User.Logout();
             Connection.Stop();
             IsolatedStorageSettings.Save();
         }
@@ -118,7 +117,6 @@ namespace WPChat
         // This code will not execute when the application is deactivated
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
-            User.Logout();
             Connection.Stop();
             IsolatedStorageSettings.Save();
         }
@@ -246,23 +244,40 @@ namespace WPChat
                                 App.Current.Terminate();
                             }
                         }
-                        else if (obj.NewState == ConnectionState.Connected && App.IsolatedStorageSettings.Contains("Username") && App.IsolatedStorageSettings.Contains("Password"))
+                        else if (obj.NewState == ConnectionState.Connected)
                         {
-                            App.User.Login(App.IsolatedStorageSettings["Username"] as string, App.IsolatedStorageSettings["Password"] as string, () =>
+                            if (App.IsolatedStorageSettings.Contains("Username") && App.IsolatedStorageSettings.Contains("Password"))
                             {
-                                if (App.User.IsLoggedIn == false)
+                                App.User.Login(App.IsolatedStorageSettings["Username"] as string, App.IsolatedStorageSettings["Password"] as string, () =>
                                 {
-                                    App.IsolatedStorageSettings.Remove("Username");
-                                    App.IsolatedStorageSettings.Remove("Password");
-
-                                    App.User = new OwnerUserItem();
-
-                                    Dispatcher.BeginInvoke(() =>
+                                    if (App.User.IsLoggedIn == false)
                                     {
-                                        (Application.Current.RootVisual as PhoneApplicationFrame).Navigate(new Uri("/LoginPage.xaml", UriKind.RelativeOrAbsolute));
-                                    });
-                                }
-                            });
+                                        App.IsolatedStorageSettings.Remove("Username");
+                                        App.IsolatedStorageSettings.Remove("Password");
+
+                                        App.User = new OwnerUserItem();
+
+                                        Dispatcher.BeginInvoke(() =>
+                                        {
+                                            (Application.Current.RootVisual as PhoneApplicationFrame).Navigate(new Uri("/LoginPage.xaml", UriKind.RelativeOrAbsolute));
+                                        });
+                                    }
+                                    else
+                                    {
+                                        Dispatcher.BeginInvoke(() =>
+                                        {
+                                            (Application.Current.RootVisual as PhoneApplicationFrame).Navigate(new Uri("/MainPage.xaml", UriKind.RelativeOrAbsolute));
+                                        });
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                Dispatcher.BeginInvoke(() =>
+                                {
+                                    (Application.Current.RootVisual as PhoneApplicationFrame).Navigate(new Uri("/LoginPage.xaml", UriKind.RelativeOrAbsolute));
+                                });
+                            }
                         }
                     });
                 };

@@ -173,3 +173,4 @@ C:\korisnicki_winPhone\WPChat\WPChat\obj\Debug\WPChat.dll
 C:\korisnicki_winPhone\WPChat\WPChat\obj\Debug\WPChat.pdb
 C:\korisnicki_winPhone\WPChat\WPChat\obj\Debug\XapCacheFile.xml
 C:\Users\vojda_000\Documents\Visual Studio 2013\Projects\WPChat\WPChat\obj\Debug\ConnectingPage.g.cs
+C:\korisnicki_winPhone\WPChat\WPChat\obj\Debug\ConnectingPage.g.cs

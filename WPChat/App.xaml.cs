@@ -20,7 +20,7 @@ namespace WPChat
 {
     public partial class App : Application
     {
-        private string _serverUrl = "http://localhost:37655/";
+        private string _serverUrl = "http://192.168.0.110:8080/";
         private string _hubName = "OwnerUserHub";
 
         public static OwnerUserItem User = new OwnerUserItem();
@@ -227,6 +227,22 @@ namespace WPChat
                 Dispatcher.BeginInvoke(() =>
                 {
                     App.User.Friends.First(x => x.Username == friendName).Status = status;
+                });
+            });
+
+            Hub.On("FriendRequestRecieve", (string username) =>
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    MessageBoxResult mbr = MessageBox.Show(username + " wants to add you as a friend!", "Friend Request", MessageBoxButton.OKCancel);
+                    if (mbr == MessageBoxResult.OK)
+                    {
+                        //invoke serverside FriendAccept
+                    }
+                    else
+                    {
+                        // invoke serverside FriendDenied
+                    }
                 });
             });
 

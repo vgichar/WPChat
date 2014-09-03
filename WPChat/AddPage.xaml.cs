@@ -8,6 +8,7 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using WPChat.ViewModels;
+using System.Diagnostics;
 
 namespace WPChat
 {
@@ -101,7 +102,9 @@ namespace WPChat
 
                 if (mbr == MessageBoxResult.OK)
                 {
-                    App.User.addFriend(b.Tag as string);
+                    //App.User.addFriend(b.Tag as string);
+                    
+                    App.User.friendRequest(b.Tag as string);
                 }
             }
             else

@@ -378,5 +378,11 @@ namespace WPChat.ViewModels
                 callback.Invoke();
             });
         }
+
+        public async void friendRequest(string name)
+        {
+            // get current user first
+            await App.Hub.Invoke("FriendRequest", App.User.Username, name);
+        }
     }
 }

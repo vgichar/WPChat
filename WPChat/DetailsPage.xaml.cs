@@ -63,7 +63,9 @@ namespace WPChat
                 MessageBoxResult mbr = MessageBox.Show(string.Format("Add \"{0}\" to your friends list?", name), "Add user", MessageBoxButton.OKCancel);
                 if (mbr == MessageBoxResult.OK)
                 {
-                    App.User.addFriend(name);
+                    //App.User.addFriend(name);
+                    Console.WriteLine(name);
+                    App.User.friendRequest(name);
                 }
             }
             else
@@ -127,7 +129,9 @@ namespace WPChat
 
                 if (mbr == MessageBoxResult.OK)
                 {
-                    App.User.addFriend(b.Tag as string);
+                    //App.User.addFriend(b.Tag as string);
+                    Console.WriteLine(b.Tag as string);
+                    App.User.friendRequest(b.Tag as string);
                 }
             }
             else

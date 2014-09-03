@@ -384,5 +384,11 @@ namespace WPChat.ViewModels
             // get current user first
             await App.Hub.Invoke("FriendRequest", App.User.Username, name);
         }
+
+        public async void acceptFriendRequest(string name)
+        {
+            await App.Hub.Invoke("AcceptFriendRequest", App.User.Username, name);
+        }
+
     }
 }

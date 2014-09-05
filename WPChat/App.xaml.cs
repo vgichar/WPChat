@@ -237,12 +237,23 @@ namespace WPChat
                     MessageBoxResult mbr = MessageBox.Show(username + " wants to add you as a friend!", "Friend Request", MessageBoxButton.OKCancel);
                     if (mbr == MessageBoxResult.OK)
                     {
-                        App.User.acceptFriendRequest(App.User.Username);
+                        App.User.acceptFriendRequest(username);
                     }
                     else
                     {
-                        // invoke serverside FriendDenied
+                        App.User.denyFriendRequest(username);
                     }
+                });
+            });
+
+
+            // TO DO: Change OwnerUSerITEM friend to UserItem or send custom object from the server
+            Hub.On("FriendRequestAccepted", (OwnerUserItem friend) =>
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    //TO DO add the friend in App.User.Friends.Add() i dont have the right kind of object
+                   // App.User.Friends.Add(friend);
                 });
             });
 

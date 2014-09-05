@@ -387,8 +387,12 @@ namespace WPChat.ViewModels
 
         public async void acceptFriendRequest(string name)
         {
-            await App.Hub.Invoke("AcceptFriendRequest", App.User.Username, name);
+            await App.Hub.Invoke("AcceptFriendRequest", name, App.User.Username);
         }
 
+        public async void denyFriendRequest(string name)
+        {
+            await App.Hub.Invoke("DenyFriendRequest", name, App.User.Username);
+        }
     }
 }

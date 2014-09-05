@@ -1,5 +1,5 @@
 ﻿<phone:PhoneApplicationPage
-    x:Class="WPChat.DetailsPage"
+    x:Class="WPChat.FriendRequests"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
@@ -14,6 +14,7 @@
     shell:SystemTray.IsVisible="True"
     Style="{StaticResource TransitionPageStyle}">
 
+
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <Grid.RowDefinitions>
@@ -23,14 +24,19 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel Grid.Row="0" Margin="12,17,0,28">
+            <ProgressBar Name="pbCreateRoom" IsIndeterminate="True" Visibility="Collapsed" />
             <TextBlock Text="{Binding Path=LocalizedResources.ApplicationTitle, Source={StaticResource LocalizedStrings}}" Style="{StaticResource PhoneTextNormalStyle}"/>
-            <TextBlock Name="tbTitle" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
-            <TextBlock Name="tbStats" Margin="9,-7,0,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
+            <TextBlock Name="tbTitle" Text="FriendRequests" Margin="-5,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <phone:LongListSelector Grid.Row="0" Name="llsUsers" ItemsSource="{Binding Path=Users}">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+
+            <phone:LongListSelector Grid.Row="0" Name="llsUsers">
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
                         <Border Background="Black" Tap="lss_SelectionChanged" Tag="{Binding Path=Username}">
@@ -39,7 +45,7 @@
                                     <Button Template="{StaticResource StatusIndicatorControl}" Background="{Binding Path=Status, Converter={StaticResource StatusConverter}}" Visibility="{Binding Path=Username, Converter={StaticResource UserDetailsConverter}}"/>
                                     <TextBlock Text="{Binding Username}" TextWrapping="Wrap" Style="{StaticResource PhoneTextExtraLargeStyle}"/>
                                 </StackPanel>
-                                <StackPanel Orientation="Horizontal" Visibility="{Binding Path=Username, Converter={StaticResource UserDetailsConverter}}">
+                                <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="{Binding Path=Rooms.Count}" TextWrapping="Wrap" Margin="12,-6,12,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
                                     <TextBlock Text="active conversations" TextWrapping="Wrap" Margin="0,-6,12,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
                                 </StackPanel>
@@ -50,32 +56,8 @@
                 </phone:LongListSelector.ItemTemplate>
             </phone:LongListSelector>
 
-            <phone:LongListSelector Grid.Row="0" Name="llsRooms" Visibility="Collapsed" ItemsSource="{Binding Path=Rooms}">
-                <phone:LongListSelector.ItemTemplate>
-                    <DataTemplate>
-                        <Border Background="Black" Tap="lss_SelectionChanged" Tag="{Binding Path=Name}">
-                            <StackPanel Margin="0,0,0,17" VerticalAlignment="Stretch">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Name}" TextWrapping="Wrap" Style="{StaticResource PhoneTextExtraLargeStyle}"/>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Path=Users.Count}" TextWrapping="Wrap" Margin="12,-6,12,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
-                                    <TextBlock Text="active users" TextWrapping="Wrap" Margin="0,-6,12,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
-                                </StackPanel>
-                                <Border Style="{StaticResource HorizontalLine}"/>
-                            </StackPanel>
-                        </Border>
-                    </DataTemplate>
-                </phone:LongListSelector.ItemTemplate>
-            </phone:LongListSelector>
+            
         </Grid>
     </Grid>
-    <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar>
-            <shell:ApplicationBarIconButton Text="chat" IconUri="/Assets/AppBar/share.png" Click="ApplicationBarIconButton_ClickChat" />
-            <shell:ApplicationBarIconButton Text="delete" IconUri="/Assets/AppBar/delete.png" Click="ApplicationBarIconButton_ClickDelete" />
-            <shell:ApplicationBarIconButton Text="logout" IconUri="/Assets/AppBar/logout.png" Click="ApplicationBarIconButton_ClickLogout" />
-            <shell:ApplicationBarIconButton Text="exit" IconUri="/Assets/AppBar/stop.png" Click="ApplicationBarIconButton_ClickExit" />
-        </shell:ApplicationBar>
-    </phone:PhoneApplicationPage.ApplicationBar>
+
 </phone:PhoneApplicationPage>

@@ -41,7 +41,7 @@
                         <Border Background="Black" Tap="lss_SelectionChanged" Tag="{Binding Path=Username}">
                             <StackPanel Margin="0,0,0,17" VerticalAlignment="Stretch">
                                 <StackPanel Orientation="Horizontal">
-                                    <Button Template="{StaticResource StatusIndicatorControl}" Background="{Binding Path=Status, Converter={StaticResource StatusConverter}}"/>
+                                    <Button Template="{StaticResource StatusIndicatorControl}" Background="{Binding Path=Status, Converter={StaticResource StatusConverter}}" Visibility="{Binding Path=Username, Converter={StaticResource UserDetailsConverter}}"/>
                                     <TextBlock Text="{Binding Username}" TextWrapping="Wrap" Style="{StaticResource PhoneTextExtraLargeStyle}"/>
                                 </StackPanel>
                                 <StackPanel Orientation="Horizontal">

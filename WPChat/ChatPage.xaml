@@ -6,11 +6,12 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
-    SupportedOrientations="Portrait" Orientation="Portrait"
-    mc:Ignorable="d"
+    SupportedOrientations="Portrait"  Orientation="Portrait"
     shell:SystemTray.IsVisible="True"
     Style="{StaticResource TransitionPageStyle}" Loaded="PhoneApplicationPage_Loaded">
 
@@ -20,13 +21,51 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+        <Grid Background="Transparent">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
 
-        <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock Text="{Binding Path=LocalizedResources.ApplicationTitle, Source={StaticResource LocalizedStrings}}" Style="{StaticResource PhoneTextNormalStyle}"/>
-            <TextBlock Name="tbTitle" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
-            <TextBlock Name="tbStats" Margin="9,-7,0,0" Style="{StaticResource PhoneTextSubtleStyle}"/>
-        </StackPanel>
+            <!--TitlePanel contains the name of the application and page title-->
+            <StackPanel Grid.Row="0" Margin="12,17,0,28" Grid.ColumnSpan="2">
+                <TextBlock Text="{Binding Path=LocalizedResources.ApplicationTitle,  Source={StaticResource LocalizedStrings}}" Style="{StaticResource PhoneTextNormalStyle}"/>
+                <TextBlock Name="tbTitle" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+                <TextBlock Name="tbStats" Margin="9,-7,0,0" Style="{StaticResource PhoneTextSmallStyle}"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Grid.Row="0" >
+                <toolkit:ListPicker Margin="55,10,10, 0" Width="150" BorderThickness="1" SelectionChanged="ListPicker_SelectionChanged" SelectedIndex="{Binding Converter={StaticResource ActiveStatusConverter}}">
+                    <toolkit:ListPickerItem Tag="Online">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                            <Button Template="{StaticResource StatusIndicatorControl}" Background="Green"></Button>
+                            <TextBlock Text="Online" Margin="5 0"/>
+                        </StackPanel>
+                    </toolkit:ListPickerItem>
+                    <toolkit:ListPickerItem Tag="Away">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                            <Button Template="{StaticResource StatusIndicatorControl}" Background="Orange"></Button>
+                            <TextBlock Text="Away" Margin="5 0" />
+                        </StackPanel>
+                    </toolkit:ListPickerItem>
+                    <toolkit:ListPickerItem Tag="Busy">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                            <Button Template="{StaticResource StatusIndicatorControl}" Background="Red"></Button>
+                            <TextBlock Text="Busy" Margin="5 0" />
+                        </StackPanel>
+                    </toolkit:ListPickerItem>
+                    <toolkit:ListPickerItem Tag="Offline">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                            <Button Template="{StaticResource StatusIndicatorControl}" Background="LightGray"></Button>
+                            <TextBlock Text="Offline" Margin="5 0" />
+                        </StackPanel>
+                    </toolkit:ListPickerItem>
+                </toolkit:ListPicker>
+            </StackPanel>
+        </Grid>
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">

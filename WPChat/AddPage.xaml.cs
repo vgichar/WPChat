@@ -19,6 +19,9 @@ namespace WPChat
         public AddPage()
         {
             InitializeComponent();
+
+            // Set DataContext as OwnerUser
+            this.DataContext = App.User;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -122,6 +125,19 @@ namespace WPChat
                     pbCreateRoom.Visibility = System.Windows.Visibility.Collapsed;
                 });
                 ApplicationBarIconButton_ClickRooms(sender, e);
+            }
+        }
+
+        private void ListPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ListPicker lp = sender as ListPicker;
+
+            foreach (StatusIndicator si in Enum.GetValues(typeof(StatusIndicator)))
+            {
+                if (si.ToString() == (lp.SelectedItem as ListPickerItem).Tag.ToString())
+                {
+                    App.User.ChangeStatus(si);
+                }
             }
         }
     }

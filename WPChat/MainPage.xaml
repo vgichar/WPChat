@@ -21,44 +21,51 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <!--TitlePanel contains the name of the application and page title-->
-        <StackPanel Grid.Row="0" Margin="12,17,0,28" Grid.ColumnSpan="2">
-            <TextBlock Text="{Binding Path=LocalizedResources.ApplicationTitle,  Source={StaticResource LocalizedStrings}}" Style="{StaticResource PhoneTextNormalStyle}"/>
-            <TextBlock Text="Friends" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
-        </StackPanel>
-        <StackPanel Grid.Column="1" Grid.Row="0" >
-            <toolkit:ListPicker Margin="55,10,10, 0" Width="150" BorderThickness="1" SelectionChanged="ListPicker_SelectionChanged" SelectedIndex="{Binding Converter={StaticResource ActiveStatusConverter}}">
-                <toolkit:ListPickerItem Tag="Online">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+
+        <Grid Background="Transparent">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <!--TitlePanel contains the name of the application and page title-->
+            <StackPanel Grid.Row="0" Margin="12,17,0,28" Grid.ColumnSpan="2">
+                <TextBlock Text="{Binding Path=LocalizedResources.ApplicationTitle,  Source={StaticResource LocalizedStrings}}" Style="{StaticResource PhoneTextNormalStyle}"/>
+                <TextBlock Text="Friends" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Grid.Row="0" >
+                <toolkit:ListPicker Margin="55,10,10, 0" Width="150" BorderThickness="1" SelectionChanged="ListPicker_SelectionChanged" SelectedIndex="{Binding Converter={StaticResource ActiveStatusConverter}}">
+                    <toolkit:ListPickerItem Tag="Online">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                             <Button Template="{StaticResource StatusIndicatorControl}" Background="Green"></Button>
                             <TextBlock Text="Online" Margin="5 0"/>
-                    </StackPanel>
-                </toolkit:ListPickerItem>
-                <toolkit:ListPickerItem Tag="Away">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                        <Button Template="{StaticResource StatusIndicatorControl}" Background="Orange"></Button>
-                        <TextBlock Text="Away" Margin="5 0" />
-                    </StackPanel>
-                </toolkit:ListPickerItem>
-                <toolkit:ListPickerItem Tag="Busy">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                        <Button Template="{StaticResource StatusIndicatorControl}" Background="Red"></Button>
-                        <TextBlock Text="Busy" Margin="5 0" />
-                    </StackPanel>
-                </toolkit:ListPickerItem>
-                <toolkit:ListPickerItem Tag="Offline">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                        <Button Template="{StaticResource StatusIndicatorControl}" Background="LightGray"></Button>
-                        <TextBlock Text="Offline" Margin="5 0" />
-                    </StackPanel>
-                </toolkit:ListPickerItem>
-            </toolkit:ListPicker>
-        </StackPanel>
-        
+                        </StackPanel>
+                    </toolkit:ListPickerItem>
+                    <toolkit:ListPickerItem Tag="Away">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                            <Button Template="{StaticResource StatusIndicatorControl}" Background="Orange"></Button>
+                            <TextBlock Text="Away" Margin="5 0" />
+                        </StackPanel>
+                    </toolkit:ListPickerItem>
+                    <toolkit:ListPickerItem Tag="Busy">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                            <Button Template="{StaticResource StatusIndicatorControl}" Background="Red"></Button>
+                            <TextBlock Text="Busy" Margin="5 0" />
+                        </StackPanel>
+                    </toolkit:ListPickerItem>
+                    <toolkit:ListPickerItem Tag="Offline">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                            <Button Template="{StaticResource StatusIndicatorControl}" Background="LightGray"></Button>
+                            <TextBlock Text="Offline" Margin="5 0" />
+                        </StackPanel>
+                    </toolkit:ListPickerItem>
+                </toolkit:ListPicker>
+            </StackPanel>
+        </Grid>
+
         <!--ContentPanel contains LongListSelector and LongListSelector ItemTemplate. Place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <phone:LongListSelector x:Name="llsFriends" Margin="0,0,-12,0" ItemsSource="{Binding Path=Friends}">
@@ -84,11 +91,14 @@
     </Grid>
 
     <phone:PhoneApplicationPage.ApplicationBar>
-        <shell:ApplicationBar IsMenuEnabled="True">
+        <shell:ApplicationBar IsMenuEnabled="True" >
             <shell:ApplicationBarIconButton  Text="add friend" IconUri="/Assets/AppBar/favs.addto.png" Click="ApplicationBarIconButton_ClickAddFriend"/>
             <shell:ApplicationBarIconButton  Text="fav rooms" IconUri="/Assets/AppBar/like.png" Click="ApplicationBarIconButton_ClickRooms"/>
             <shell:ApplicationBarIconButton  Text="logout" IconUri="/Assets/AppBar/logout.png" Click="ApplicationBarIconButton_ClickLogout"/>
             <shell:ApplicationBarIconButton  Text="exit" IconUri="/Assets/AppBar/stop.png" Click="ApplicationBarIconButton_ClickExit"/>
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem  Text="FriendRequestPage" Click="ApplicationBarMenuItem_Click"/>
+            </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>

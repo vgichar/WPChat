@@ -89,7 +89,7 @@ namespace WPChat
         // ApplicationBar Exit
         private void ApplicationBarIconButton_ClickExit(object sender, EventArgs e)
         {
-            App.ExitApp();
+            App.ExitApp(false);
         }
 
         // ApplicationBar Register

@@ -83,5 +83,10 @@ namespace WPChat
                 }
             }
         }
+
+        private void ApplicationBarMenuItem_Click(object sender, EventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/FriendRequestsPage.xaml", UriKind.RelativeOrAbsolute));
+        }
     }
 }

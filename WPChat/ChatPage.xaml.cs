@@ -131,5 +131,19 @@ namespace WPChat
         {
             PhoneApplicationPage_Loaded(sender, e);
         }
+
+        private void ListPicker_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ListPicker lp = sender as ListPicker;
+
+
+            foreach (StatusIndicator si in Enum.GetValues(typeof(StatusIndicator)))
+            {
+                if (si.ToString() == (lp.SelectedItem as ListPickerItem).Tag.ToString())
+                {
+                    App.User.ChangeStatus(si);
+                }
+            }
+        }
     }
 }

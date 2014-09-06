@@ -20,7 +20,7 @@ namespace WPChat
 {
     public partial class App : Application
     {
-        private string _serverUrl = "http://localhost:37655/";
+        private string _serverUrl = "http://192.168.0.104:8080/";
         private string _hubName = "OwnerUserHub";
 
         public static OwnerUserItem User = new OwnerUserItem();
@@ -106,9 +106,12 @@ namespace WPChat
             }
         }
 
-        public static async void ExitApp()
+        public static async void ExitApp(bool logout = true)
         {
-            await Hub.Invoke("Logout");
+            if (logout)
+            {
+                await Hub.Invoke("Logout");
+            }
             IsolatedStorageSettings.Save();
             Application.Current.Terminate();
         }
@@ -397,7 +400,7 @@ namespace WPChat
                             MessageBoxResult mbr = MessageBox.Show("Connection lost, please try later", "No connection!", MessageBoxButton.OK);
                             if (mbr == MessageBoxResult.OK)
                             {
-                                App.ExitApp();
+                                App.ExitApp(false);
                             }
                         }
                         else if (obj.NewState == ConnectionState.Connected)
@@ -444,7 +447,7 @@ namespace WPChat
                 MessageBoxResult mbr = MessageBox.Show("Cannot connect, please try later", "No connection!", MessageBoxButton.OK);
                 if (mbr == MessageBoxResult.OK)
                 {
-                    App.ExitApp();
+                    App.ExitApp(false);
                 }
             }
         }

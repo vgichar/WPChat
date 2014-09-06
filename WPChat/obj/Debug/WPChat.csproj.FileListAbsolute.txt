@@ -251,7 +251,6 @@ C:\Users\Vojdan\Documents\Visual Studio 2013\Projects\WPChat\WPChat\obj\Debug\Ad
 C:\Users\Vojdan\Documents\Visual Studio 2013\Projects\WPChat\WPChat\obj\Debug\ChatPage.g.cs
 C:\Users\Vojdan\Documents\Visual Studio 2013\Projects\WPChat\WPChat\obj\Debug\ConnectingPage.g.cs
 C:\Users\Vojdan\Documents\Visual Studio 2013\Projects\WPChat\WPChat\obj\Debug\DetailsPage.g.cs
-C:\Users\Vojdan\Documents\Visual Studio 2013\Projects\WPChat\WPChat\obj\Debug\FriendRequests.g.cs
 C:\Users\Vojdan\Documents\Visual Studio 2013\Projects\WPChat\WPChat\obj\Debug\LoginPage.g.cs
 C:\Users\Vojdan\Documents\Visual Studio 2013\Projects\WPChat\WPChat\obj\Debug\MainPage.g.cs
 C:\Users\Vojdan\Documents\Visual Studio 2013\Projects\WPChat\WPChat\obj\Debug\RegisterPage.g.cs
@@ -263,3 +262,4 @@ C:\Users\Vojdan\Documents\Visual Studio 2013\Projects\WPChat\WPChat\obj\Debug\WP
 C:\Users\Vojdan\Documents\Visual Studio 2013\Projects\WPChat\WPChat\obj\Debug\WPChat.pdb
 C:\Users\Vojdan\Documents\Visual Studio 2013\Projects\WPChat\WPChat\obj\Debug\XapCacheFile.xml
 C:\Users\Vojdan\Documents\Visual Studio 2013\Projects\WPChat\WPChat\obj\Debug\WPChat.csprojResolveAssemblyReference.cache
+C:\Users\Vojdan\Documents\Visual Studio 2013\Projects\WPChat\WPChat\obj\Debug\FriendRequestsPage.g.cs

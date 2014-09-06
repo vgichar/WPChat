@@ -56,8 +56,7 @@ namespace WPChat
         // ApplicationBar Exit
         private void ApplicationBarIconButton_ClickExit(object sender, EventArgs e)
         {
-            App.IsolatedStorageSettings.Save();
-            Application.Current.Terminate();
+            App.ExitApp();
         }
 
         // Register user on enter - name

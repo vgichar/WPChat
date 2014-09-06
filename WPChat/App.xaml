@@ -12,7 +12,7 @@
         <local:StatusConverter xmlns:local="clr-namespace:WPChat.Resources" x:Key="StatusConverter"/>
         <local:ActiveStatusConverter xmlns:local="clr-namespace:WPChat.Resources" x:Key="ActiveStatusConverter"/>
         <local:MessagesAlignmentConverter xmlns:local="clr-namespace:WPChat.Resources" x:Key="MessagesAlignmentConverter"/>
-        <local:UserDetailsConverter xmlns:local="clr-namespace:WPChat.Resources" x:Key="UserDetailsConverter"/>
+        <local:DetailsConverter xmlns:local="clr-namespace:WPChat.Resources" x:Key="DetailsConverter"/>
 
         <ControlTemplate x:Key="StatusIndicatorControl" TargetType="Button">
             <Border Background="{TemplateBinding Background}" CornerRadius="7" Width="14" Height="14" Margin="10, 5, 5, 0">

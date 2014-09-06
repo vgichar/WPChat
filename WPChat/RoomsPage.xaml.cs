@@ -43,12 +43,7 @@ namespace WPChat
         // ApplicationBar Logout
         private void ApplicationBarIconButton_ClickLogout(object sender, EventArgs e)
         {
-            App.IsolatedStorageSettings.Remove("Username");
-            App.IsolatedStorageSettings.Remove("Password");
-
             App.User.Logout();
-
-            App.User = new OwnerUserItem();
 
             NavigationService.Navigate(new Uri("/LoginPage.xaml", UriKind.RelativeOrAbsolute));
         }
@@ -56,8 +51,7 @@ namespace WPChat
         // ApplicationBar Exit
         private void ApplicationBarIconButton_ClickExit(object sender, EventArgs e)
         {
-            App.IsolatedStorageSettings.Save();
-            Application.Current.Terminate();
+            App.ExitApp();
         }
 
         // ApplicationBar Add Room

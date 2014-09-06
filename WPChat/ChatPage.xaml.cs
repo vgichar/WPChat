@@ -78,7 +78,7 @@ namespace WPChat
 
         private void sendButton_Tap(object sender, EventArgs e)
         {
-            App.User.sendMessage(new MessageItem()
+            App.User.SendMessage(new MessageItem()
             {
                 From = App.User.Username,
                 To = tbTitle.Text,
@@ -94,20 +94,14 @@ namespace WPChat
 
         private void ApplicationBarIconButton_ClickLogout(object sender, EventArgs e)
         {
-            App.IsolatedStorageSettings.Remove("Username");
-            App.IsolatedStorageSettings.Remove("Password");
-
             App.User.Logout();
-
-            App.User = new OwnerUserItem();
 
             NavigationService.Navigate(new Uri("/LoginPage.xaml", UriKind.RelativeOrAbsolute));
         }
 
         private void ApplicationBarIconButton_ClickExit(object sender, EventArgs e)
         {
-            App.IsolatedStorageSettings.Save();
-            Application.Current.Terminate();
+            App.ExitApp();
         }
 
         private void ApplicationBarIconButton_ClickDetails(object sender, EventArgs e)
@@ -122,12 +116,12 @@ namespace WPChat
             {
                 if (type == DataContextType.User)
                 {
-                    App.User.removeFriend(name);
+                    App.User.RemoveFriend(name);
                     NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.RelativeOrAbsolute));
                 }
                 else
                 {
-                    App.User.removeRoom(name);
+                    App.User.RemoveRoom(name);
                     NavigationService.Navigate(new Uri("/RoomsPage.xaml", UriKind.RelativeOrAbsolute));
                 }
             }

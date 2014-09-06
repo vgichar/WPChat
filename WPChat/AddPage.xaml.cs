@@ -39,20 +39,14 @@ namespace WPChat
 
         private void ApplicationBarIconButton_ClickLogout(object sender, EventArgs e)
         {
-            App.IsolatedStorageSettings.Remove("Username");
-            App.IsolatedStorageSettings.Remove("Password");
-
             App.User.Logout();
-
-            App.User = new OwnerUserItem();
 
             NavigationService.Navigate(new Uri("/LoginPage.xaml", UriKind.RelativeOrAbsolute));
         }
 
         private void ApplicationBarIconButton_ClickExit(object sender, EventArgs e)
         {
-            App.IsolatedStorageSettings.Save();
-            Application.Current.Terminate();
+            App.ExitApp();
         }
 
         private void ApplicationBarIconButton_ClickFriends(object sender, EventArgs e)
@@ -78,14 +72,14 @@ namespace WPChat
             if (type == DataContextType.User)
             {
                 List<UserItem> list = new List<UserItem>();
-                App.User.getUsersByNameStart(name, list, () => {
+                App.User.GetUsersByNameStart(name, list, () => {
                     llsUsers.ItemsSource = list;
                 });
             }
             else
             {
                 List<RoomItem> list = new List<RoomItem>();
-                App.User.getRoomsByNameStart(name, list, () =>
+                App.User.GetRoomsByNameStart(name, list, () =>
                 {
                     llsRooms.ItemsSource = list;
                 });
@@ -102,9 +96,7 @@ namespace WPChat
 
                 if (mbr == MessageBoxResult.OK)
                 {
-                    //App.User.addFriend(b.Tag as string);
-                    
-                    App.User.friendRequest(b.Tag as string);
+                    App.User.SendFriendRequest(b.Tag as string);
                 }
             }
             else
@@ -113,7 +105,7 @@ namespace WPChat
 
                 if (mbr == MessageBoxResult.OK)
                 {
-                    App.User.addRoom(b.Tag as string);
+                    App.User.AddRoom(b.Tag as string);
                 }
             }
         }

@@ -127,7 +127,7 @@
     </Compile>
     <Compile Include="Resources\MessagesAlignmentConverter.cs" />
     <Compile Include="Resources\StatusConverter.cs" />
-    <Compile Include="Resources\UserDetailsConverter.cs" />
+    <Compile Include="Resources\DetailsConverter.cs" />
     <Compile Include="RoomsPage.xaml.cs">
       <DependentUpon>RoomsPage.xaml</DependentUpon>
     </Compile>

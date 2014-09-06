@@ -28,6 +28,7 @@ namespace WPChat
         public static HubConnection Connection;
         public static Dispatcher Dispatcher = Deployment.Current.Dispatcher;
 
+        #region autoinit
         /// <summary>
         /// Provides easy access to the root frame of the Phone Application.
         /// </summary>
@@ -103,6 +104,13 @@ namespace WPChat
                 User.Username = IsolatedStorageSettings["Username"] as string;
                 User.Password = IsolatedStorageSettings["Password"] as string;
             }
+        }
+
+        public static async void ExitApp()
+        {
+            await Hub.Invoke("Logout");
+            IsolatedStorageSettings.Save();
+            Application.Current.Terminate();
         }
 
         // Code to execute when the application is deactivated (sent to background)
@@ -201,126 +209,8 @@ namespace WPChat
                 ; // do nothing
             }
         }
-
-        private async void InitializeHub()
-        {
-            Connection = new HubConnection(_serverUrl);
-            Hub = Connection.CreateHubProxy(_hubName);
-
-            Hub.On("ReceiveMessage", (MessageItem mi) =>
-            {
-                Dispatcher.BeginInvoke(() =>
-                {
-                    if (mi.Type == DataContextType.User)
-                    {
-                        App.User.Friends.First(x => x.Username == mi.From).Messages.Add(mi);
-                    }
-                    else
-                    {
-                        App.User.Rooms.First(x => x.Name == mi.To).Messages.Add(mi);
-                    }
-                });
-            });
-
-            Hub.On("FriendStatusChange", (string friendName, StatusIndicator status) =>
-            {
-                Dispatcher.BeginInvoke(() =>
-                {
-                    App.User.Friends.First(x => x.Username == friendName).Status = status;
-                });
-            });
-
-            Hub.On("FriendRequestReceived", (string username) =>
-            {
-                Dispatcher.BeginInvoke(() =>
-                {
-                    MessageBoxResult mbr = MessageBox.Show(username + " wants to add you as a friend!", "Friend Request", MessageBoxButton.OKCancel);
-                    if (mbr == MessageBoxResult.OK)
-                    {
-                        App.User.acceptFriendRequest(username);
-                    }
-                    else
-                    {
-                        App.User.denyFriendRequest(username);
-                    }
-                });
-            });
-
-
-            // TO DO: Change OwnerUSerITEM friend to UserItem or send custom object from the server
-            Hub.On("FriendRequestAccepted", (OwnerUserItem friend) =>
-            {
-                Dispatcher.BeginInvoke(() =>
-                {
-                    //TO DO add the friend in App.User.Friends.Add() i dont have the right kind of object
-                   // App.User.Friends.Add(friend);
-                });
-            });
-
-            try
-            {
-                Connection.StateChanged += (StateChange obj) =>
-                {
-                    Dispatcher.BeginInvoke(() =>
-                    {
-                        if (obj.NewState == ConnectionState.Disconnected)
-                        {
-                            MessageBoxResult mbr = MessageBox.Show("Connection lost, please try later", "No connection!", MessageBoxButton.OK);
-                            if (mbr == MessageBoxResult.OK)
-                            {
-                                App.Current.Terminate();
-                            }
-                        }
-                        else if (obj.NewState == ConnectionState.Connected)
-                        {
-                            if (App.IsolatedStorageSettings.Contains("Username") && App.IsolatedStorageSettings.Contains("Password"))
-                            {
-                                App.User.Login(App.IsolatedStorageSettings["Username"] as string, App.IsolatedStorageSettings["Password"] as string, () =>
-                                {
-                                    if (App.User.IsLoggedIn == false)
-                                    {
-                                        App.IsolatedStorageSettings.Remove("Username");
-                                        App.IsolatedStorageSettings.Remove("Password");
-
-                                        App.User = new OwnerUserItem();
-
-                                        Dispatcher.BeginInvoke(() =>
-                                        {
-                                            (Application.Current.RootVisual as PhoneApplicationFrame).Navigate(new Uri("/LoginPage.xaml", UriKind.RelativeOrAbsolute));
-                                        });
-                                    }
-                                    else
-                                    {
-                                        Dispatcher.BeginInvoke(() =>
-                                        {
-                                            (Application.Current.RootVisual as PhoneApplicationFrame).Navigate(new Uri("/MainPage.xaml", UriKind.RelativeOrAbsolute));
-                                        });
-                                    }
-                                });
-                            }
-                            else
-                            {
-                                Dispatcher.BeginInvoke(() =>
-                                {
-                                    (Application.Current.RootVisual as PhoneApplicationFrame).Navigate(new Uri("/LoginPage.xaml", UriKind.RelativeOrAbsolute));
-                                });
-                            }
-                        }
-                    });
-                };
-                await Connection.Start();
-            }
-            catch (Exception ex)
-            {
-                MessageBoxResult mbr = MessageBox.Show("Cannot connect, please try later", "No connection!", MessageBoxButton.OK);
-                if (mbr == MessageBoxResult.OK)
-                {
-                    App.Current.Terminate();
-                }
-            }
-        }
-
         #endregion
+
 
         // Initialize the app's font and flow direction as defined in its localized resource strings.
         //
@@ -375,6 +265,187 @@ namespace WPChat
                 }
 
                 throw;
+            }
+        }
+
+        #endregion
+
+        private async void InitializeHub()
+        {
+            Connection = new HubConnection(_serverUrl);
+            Hub = Connection.CreateHubProxy(_hubName);
+
+            Hub.On("ReceiveMessage", (MessageItem mi) =>
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    if (mi.Type == DataContextType.User)
+                    {
+                        App.User.Friends.First(x => x.Username == mi.From).Messages.Add(mi);
+                    }
+                    else
+                    {
+                        App.User.Rooms.First(x => x.Name == mi.To).Messages.Add(mi);
+                    }
+                });
+            });
+
+            Hub.On("FriendStatusChanged", (string friendName, StatusIndicator status) =>
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    App.User.Friends.First(x => x.Username == friendName).Status = status;
+                });
+            });
+
+            Hub.On("FriendRequestReceived", (string username) =>
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    App.User.FriendRequests.Add(username);
+                });
+            });
+
+
+            // TO DO: Change OwnerUSerITEM friend to UserItem or send custom object from the server
+            Hub.On("FriendRequestAccepted", (UserItem friend) =>
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    App.User.Friends.Add(friend);
+
+                    foreach (RoomItem ri in friend.Rooms)
+                    {
+                        RoomItem room = App.User.Rooms.FirstOrDefault(x => x.Name == ri.Name);
+                        if (room != null)
+                        {
+                            friend.Rooms.Remove(ri);
+                            friend.Rooms.Add(ri);
+                        }
+                    }
+                });
+            });
+
+            Hub.On("NewMemberInRoom", (string memberName, string roomName) =>
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    RoomItem ri = App.User.Rooms.First(x => x.Name == roomName);
+                    UserItem ui = App.User.Friends.FirstOrDefault(x => x.Username == memberName);
+                    if (ui == null)
+                    {
+                        ui = new UserItem() { Username = memberName };
+                    }
+
+                    ri.Users.Add(ui);
+                });
+            });
+
+            Hub.On("FriendJoinRoom", (string memberName, string roomName) =>
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    UserItem ui = App.User.Friends.First(x => x.Username == memberName);
+                    RoomItem ri = App.User.Rooms.FirstOrDefault(x => x.Name == roomName);
+                    if (ri == null)
+                    {
+                        ri = new RoomItem() { Name = roomName };
+                    }
+
+                    ui.Rooms.Add(ri);
+                });
+            });
+
+            Hub.On("RemoveMemberFromRoom", (string memberName, string roomName) =>
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    RoomItem ri = App.User.Rooms.First(x => x.Name == roomName);
+                    UserItem ui = App.User.Friends.FirstOrDefault(x => x.Username == memberName);
+                    if (ui == null)
+                    {
+                        ui = new UserItem() { Username = memberName };
+                    }
+
+                    ri.Users.Remove(ui);
+                });
+            });
+
+            Hub.On("FriendJoinRoom", (string memberName, string roomName) =>
+            {
+                Dispatcher.BeginInvoke(() =>
+                {
+                    UserItem ui = App.User.Friends.First(x => x.Username == memberName);
+                    RoomItem ri = App.User.Rooms.FirstOrDefault(x => x.Name == roomName);
+                    if (ri == null)
+                    {
+                        ri = new RoomItem() { Name = roomName };
+                    }
+
+                    ui.Rooms.Remove(ri);
+                });
+            });
+
+            try
+            {
+                Connection.StateChanged += (StateChange obj) =>
+                {
+                    Dispatcher.BeginInvoke(() =>
+                    {
+                        if (obj.NewState == ConnectionState.Disconnected)
+                        {
+                            MessageBoxResult mbr = MessageBox.Show("Connection lost, please try later", "No connection!", MessageBoxButton.OK);
+                            if (mbr == MessageBoxResult.OK)
+                            {
+                                App.ExitApp();
+                            }
+                        }
+                        else if (obj.NewState == ConnectionState.Connected)
+                        {
+                            if (App.IsolatedStorageSettings.Contains("Username") && App.IsolatedStorageSettings.Contains("Password"))
+                            {
+                                App.User.Login(App.IsolatedStorageSettings["Username"] as string, App.IsolatedStorageSettings["Password"] as string, () =>
+                                {
+                                    if (App.User.IsLoggedIn == false)
+                                    {
+                                        App.IsolatedStorageSettings.Remove("Username");
+                                        App.IsolatedStorageSettings.Remove("Password");
+
+                                        App.User = new OwnerUserItem();
+
+                                        Dispatcher.BeginInvoke(() =>
+                                        {
+                                            (Application.Current.RootVisual as PhoneApplicationFrame).Navigate(new Uri("/LoginPage.xaml", UriKind.RelativeOrAbsolute));
+                                        });
+                                    }
+                                    else
+                                    {
+                                        Dispatcher.BeginInvoke(() =>
+                                        {
+                                            (Application.Current.RootVisual as PhoneApplicationFrame).Navigate(new Uri("/MainPage.xaml", UriKind.RelativeOrAbsolute));
+                                        });
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                Dispatcher.BeginInvoke(() =>
+                                {
+                                    (Application.Current.RootVisual as PhoneApplicationFrame).Navigate(new Uri("/LoginPage.xaml", UriKind.RelativeOrAbsolute));
+                                });
+                            }
+                        }
+                    });
+                };
+                await Connection.Start();
+            }
+            catch (Exception ex)
+            {
+                MessageBoxResult mbr = MessageBox.Show("Cannot connect, please try later", "No connection!", MessageBoxButton.OK);
+                if (mbr == MessageBoxResult.OK)
+                {
+                    App.ExitApp();
+                }
             }
         }
     }

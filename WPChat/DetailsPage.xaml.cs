@@ -63,9 +63,8 @@ namespace WPChat
                 MessageBoxResult mbr = MessageBox.Show(string.Format("Add \"{0}\" to your friends list?", name), "Add user", MessageBoxButton.OKCancel);
                 if (mbr == MessageBoxResult.OK)
                 {
-                    //App.User.addFriend(name);
                     Console.WriteLine(name);
-                    App.User.friendRequest(name);
+                    App.User.SendFriendRequest(name);
                 }
             }
             else
@@ -73,25 +72,19 @@ namespace WPChat
                 MessageBoxResult mbr = MessageBox.Show(string.Format("Add \"{0}\" to your favorite rooms list?", name), "Add room", MessageBoxButton.OKCancel);
                 if (mbr == MessageBoxResult.OK)
                 {
-                    App.User.addRoom(name);
+                    App.User.AddRoom(name);
                 }
             }
         }
 
         private void ApplicationBarIconButton_ClickExit(object sender, EventArgs e)
         {
-            App.IsolatedStorageSettings.Save();
-            Application.Current.Terminate();
+            App.ExitApp();
         }
 
         private void ApplicationBarIconButton_ClickLogout(object sender, EventArgs e)
         {
-            App.IsolatedStorageSettings.Remove("Username");
-            App.IsolatedStorageSettings.Remove("Password");
-
             App.User.Logout();
-
-            App.User = new OwnerUserItem();
 
             NavigationService.Navigate(new Uri("/LoginPage.xaml", UriKind.RelativeOrAbsolute));
         }
@@ -103,12 +96,12 @@ namespace WPChat
             {
                 if (type == DataContextType.User)
                 {
-                    App.User.removeFriend(name);
+                    App.User.RemoveFriend(name);
                     NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.RelativeOrAbsolute));
                 }
                 else
                 {
-                    App.User.removeRoom(name);
+                    App.User.RemoveRoom(name);
                     NavigationService.Navigate(new Uri("/RoomsPage.xaml", UriKind.RelativeOrAbsolute));
                 }
             }
@@ -122,25 +115,40 @@ namespace WPChat
         private void lss_SelectionChanged(object sender, System.Windows.Input.GestureEventArgs e)
         {
             Border b = sender as Border;
+            string name = b.Tag as string;
 
             if (type == DataContextType.Room)
             {
-                MessageBoxResult mbr = MessageBox.Show(string.Format("Add \"{0}\" to your friends list?", b.Tag as string), "Add user", MessageBoxButton.OKCancel);
-
-                if (mbr == MessageBoxResult.OK)
+                UserItem ui = App.User.Friends.FirstOrDefault(x => x.Username == name);
+                if (ui == null)
                 {
-                    //App.User.addFriend(b.Tag as string);
-                    Console.WriteLine(b.Tag as string);
-                    App.User.friendRequest(b.Tag as string);
+                    MessageBoxResult mbr = MessageBox.Show(string.Format("Add \"{0}\" to your friends list?", name), "Add user", MessageBoxButton.OKCancel);
+
+                    if (mbr == MessageBoxResult.OK)
+                    {
+                        App.User.SendFriendRequest(name);
+                    }
+                }
+                else
+                {
+                    NavigationService.Navigate(new Uri(string.Format("/ChatPage.xaml?Name={0}&Type={1}", Uri.EscapeUriString(name), Uri.EscapeUriString(DataContextType.User.ToString())), UriKind.RelativeOrAbsolute));
                 }
             }
             else
             {
-                MessageBoxResult mbr = MessageBox.Show(string.Format("Add \"{0}\" to your favorite rooms list?", b.Tag as string), "Add room", MessageBoxButton.OKCancel);
-
-                if (mbr == MessageBoxResult.OK)
+                RoomItem ri = App.User.Rooms.FirstOrDefault(x => x.Name == name);
+                if (ri == null)
                 {
-                    App.User.addRoom(b.Tag as string);
+                    MessageBoxResult mbr = MessageBox.Show(string.Format("Add \"{0}\" to your favorite rooms list?", name), "Add room", MessageBoxButton.OKCancel);
+
+                    if (mbr == MessageBoxResult.OK)
+                    {
+                        App.User.AddRoom(name);
+                    }
+                }
+                else
+                {
+                    NavigationService.Navigate(new Uri(string.Format("/ChatPage.xaml?Name={0}&Type={1}", Uri.EscapeUriString(name), Uri.EscapeUriString(DataContextType.Room.ToString())), UriKind.RelativeOrAbsolute));
                 }
             }
         }

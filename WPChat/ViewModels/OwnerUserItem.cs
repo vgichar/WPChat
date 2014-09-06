@@ -11,7 +11,7 @@ using System.Windows;
 
 namespace WPChat.ViewModels
 {
-    public class OwnerUserItem : INotifyPropertyChanged
+    public partial class OwnerUserItem : INotifyPropertyChanged
     {
         private string _username;
         public string Username
@@ -113,6 +113,24 @@ namespace WPChat.ViewModels
             }
         }
 
+        private ObservableCollection<string> _friendRequests;
+        public ObservableCollection<string> FriendRequests
+        {
+            get
+            {
+                if (_friendRequests == null)
+                {
+                    _friendRequests = new ObservableCollection<string>();
+                }
+                return _friendRequests;
+            }
+            set
+            {
+                _friendRequests = value;
+                RaisePropertyChanged("FriendRequests");
+            }
+        }
+
         public OwnerUserItem()
         {
             Username = "";
@@ -121,6 +139,7 @@ namespace WPChat.ViewModels
             Status = StatusIndicator.Online;
             Friends = new ObservableCollection<UserItem>();
             Rooms = new ObservableCollection<RoomItem>();
+            FriendRequests = new ObservableCollection<string>();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -132,7 +151,11 @@ namespace WPChat.ViewModels
             }
         }
 
-        public async void getUserByName(string name, UserItem userItem, Action callback)
+    }
+
+    public partial class OwnerUserItem{
+
+        public async void GetUserByName(string name, UserItem userItem, Action callback)
         {
             UserItem ui = await App.Hub.Invoke<UserItem>("GetUserByName", name);
             App.Dispatcher.BeginInvoke(() =>
@@ -162,7 +185,7 @@ namespace WPChat.ViewModels
             });
         }
 
-        public async void getRoomByName(string name, RoomItem roomItem, Action callback)
+        public async void GetRoomByName(string name, RoomItem roomItem, Action callback)
         {
             RoomItem ri = await App.Hub.Invoke<RoomItem>("GetRoomByName", name);
             App.Dispatcher.BeginInvoke(() =>
@@ -192,7 +215,7 @@ namespace WPChat.ViewModels
             });
         }
 
-        public async void getUsersByNameStart(string name, IList list, Action callback)
+        public async void GetUsersByNameStart(string name, IList list, Action callback)
         {
             List<UserItem> l = await App.Hub.Invoke<List<UserItem>>("GetUsersByNameStart", name);
             App.Dispatcher.BeginInvoke(() =>
@@ -203,7 +226,7 @@ namespace WPChat.ViewModels
             });
         }
 
-        public async void getRoomsByNameStart(string name, IList list, Action callback)
+        public async void GetRoomsByNameStart(string name, IList list, Action callback)
         {
             List<RoomItem> l = await App.Hub.Invoke<List<RoomItem>>("GetRoomsByNameStart", name);
             App.Dispatcher.BeginInvoke(() =>
@@ -214,7 +237,7 @@ namespace WPChat.ViewModels
             });
         }
 
-        public async void removeFriend(string username)
+        public async void RemoveFriend(string username)
         {
             bool res = await App.Hub.Invoke<bool>("RemoveFriend", username);
             App.Dispatcher.BeginInvoke(() =>
@@ -226,7 +249,7 @@ namespace WPChat.ViewModels
             });
         }
 
-        public async void removeRoom(string name)
+        public async void RemoveRoom(string name)
         {
             bool res = await App.Hub.Invoke<bool>("RemoveRoom", name);
             App.Dispatcher.BeginInvoke(() =>
@@ -238,33 +261,33 @@ namespace WPChat.ViewModels
             });
         }
 
-        public async void addFriend(string username)
+        public async void AddFriend(string username)
         {
             await App.Hub.Invoke("AddFriend", username);
             App.Dispatcher.BeginInvoke(() =>
             {
                 UserItem ui = new UserItem();
-                getUserByName(username, ui, () =>
+                GetUserByName(username, ui, () =>
                 {
                     Friends.Add(ui);
                 });
             });
         }
 
-        public async void addRoom(string name)
+        public async void AddRoom(string name)
         {
             await App.Hub.Invoke("AddRoom", name);
             App.Dispatcher.BeginInvoke(() =>
             {
                 RoomItem ri = new RoomItem();
-                getRoomByName(name, ri, () =>
+                GetRoomByName(name, ri, () =>
                 {
                     Rooms.Add(ri);
                 });
             });
         }
 
-        public async void sendMessage(MessageItem mi)
+        public async void SendMessage(MessageItem mi)
         {
             await App.Hub.Invoke("SendMessage", mi);
             App.Dispatcher.BeginInvoke(() =>
@@ -315,7 +338,14 @@ namespace WPChat.ViewModels
 
         public async void Logout()
         {
-            await App.Hub.Invoke<bool>("Logout");
+            bool res = await App.Hub.Invoke<bool>("Logout");
+
+            if (res)
+            {
+                App.IsolatedStorageSettings.Remove("Username");
+                App.IsolatedStorageSettings.Remove("Password");
+                App.User = new OwnerUserItem();
+            }
         }
 
         public async void Login(string username, string password, Action callback)
@@ -331,6 +361,7 @@ namespace WPChat.ViewModels
                     this.Status = oui.Status;
                     App.Dispatcher.BeginInvoke(() =>
                     {
+                        this.FriendRequests = new ObservableCollection<string>(oui.FriendRequests);
                         this.Friends = new ObservableCollection<UserItem>(oui.Friends);
                         this.Rooms = new ObservableCollection<RoomItem>(oui.Rooms);
 
@@ -379,20 +410,19 @@ namespace WPChat.ViewModels
             });
         }
 
-        public async void friendRequest(string name)
+        public async void SendFriendRequest(string name)
         {
-            // get current user first
-            await App.Hub.Invoke("FriendRequest", App.User.Username, name);
+            await App.Hub.Invoke("SendFriendRequest", name);
         }
 
-        public async void acceptFriendRequest(string name)
+        public async void AcceptFriendRequest(string name)
         {
-            await App.Hub.Invoke("AcceptFriendRequest", name, App.User.Username);
+            await App.Hub.Invoke("AcceptFriendRequest", name);
         }
 
-        public async void denyFriendRequest(string name)
+        public async void DenyFriendRequest(string name)
         {
-            await App.Hub.Invoke("DenyFriendRequest", name, App.User.Username);
+            await App.Hub.Invoke("DenyFriendRequest", name);
         }
     }
 }

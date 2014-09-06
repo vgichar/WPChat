@@ -16,5 +16,10 @@ namespace WPChat
         {
             InitializeComponent();
         }
+
+        private void lss_SelectionChanged(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+
+        }
     }
 }

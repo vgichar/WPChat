@@ -20,7 +20,7 @@ namespace WPChat
 {
     public partial class App : Application
     {
-        private string _serverUrl = "http://localhost:37655/";
+        private string _serverUrl = "http://192.168.0.105:8080/";
         private string _hubName = "OwnerUserHub";
 
         public static OwnerUserItem User = new OwnerUserItem();
@@ -333,14 +333,17 @@ namespace WPChat
             {
                 Dispatcher.BeginInvoke(() =>
                 {
-                    RoomItem ri = App.User.Rooms.First(x => x.Name == roomName);
-                    UserItem ui = App.User.Friends.FirstOrDefault(x => x.Username == memberName);
-                    if (ui == null)
+                    if (memberName != App.User.Username)
                     {
-                        ui = new UserItem() { Username = memberName };
-                    }
+                        RoomItem ri = App.User.Rooms.First(x => x.Name == roomName);
+                        UserItem ui = App.User.Friends.FirstOrDefault(x => x.Username == memberName);
+                        if (ui == null)
+                        {
+                            ui = new UserItem() { Username = memberName };
+                        }
 
-                    ri.Users.Add(ui);
+                        ri.Users.Add(ui);
+                    }
                 });
             });
 
@@ -363,14 +366,17 @@ namespace WPChat
             {
                 Dispatcher.BeginInvoke(() =>
                 {
-                    RoomItem ri = App.User.Rooms.First(x => x.Name == roomName);
-                    UserItem ui = App.User.Friends.FirstOrDefault(x => x.Username == memberName);
-                    if (ui == null)
+                    if (memberName != App.User.Username)
                     {
-                        ui = new UserItem() { Username = memberName };
-                    }
+                        RoomItem ri = App.User.Rooms.First(x => x.Name == roomName);
+                        UserItem ui = App.User.Friends.FirstOrDefault(x => x.Username == memberName);
+                        if (ui == null)
+                        {
+                            ui = new UserItem() { Username = memberName };
+                        }
 
-                    ri.Users.Remove(ui);
+                        ri.Users.Remove(ui);
+                    }
                 });
             });
 

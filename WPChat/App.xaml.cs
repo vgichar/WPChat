@@ -294,13 +294,13 @@ namespace WPChat
 
                     if (!App.UnseenMessages.Contains(mi.From) && (Application.Current.RootVisual as PhoneApplicationFrame).CurrentSource != new Uri(string.Format("/ChatPage.xaml?Name={0}&Type={1}", Uri.EscapeUriString(mi.From), Uri.EscapeUriString(mi.Type.ToString())), UriKind.RelativeOrAbsolute))
                     {
-                        App.UnseenMessages.Add(mi.From);
                         MessageBoxResult mbr = MessageBox.Show(string.Format("{0} sent you a message.\nVisit chat?", mi.From), "You have new message!", MessageBoxButton.OKCancel);
                         if (mbr == MessageBoxResult.OK)
                         {
                             (Application.Current.RootVisual as PhoneApplicationFrame).Navigate(new Uri(string.Format("/ChatPage.xaml?Name={0}&Type={1}", Uri.EscapeUriString(mi.From), Uri.EscapeUriString(mi.Type.ToString())), UriKind.RelativeOrAbsolute));
                         }
                     }
+                    App.UnseenMessages.Add(mi.From);
                 });
             });
 
@@ -317,12 +317,12 @@ namespace WPChat
                 Dispatcher.BeginInvoke(() =>
                 {
                     App.User.FriendRequests.Add(username);
-                    if ((Application.Current.RootVisual as PhoneApplicationFrame).CurrentSource != new Uri("/FriendRequestPage.xaml", UriKind.RelativeOrAbsolute))
+                    if ((Application.Current.RootVisual as PhoneApplicationFrame).CurrentSource != new Uri("/FriendRequestsPage.xaml", UriKind.RelativeOrAbsolute))
                     {
                         MessageBoxResult mbr = MessageBox.Show(string.Format("{0} sent you a friend request.\nView friend requests?", username), "You have new friend request!", MessageBoxButton.OKCancel);
                         if (mbr == MessageBoxResult.OK)
                         {
-                            (Application.Current.RootVisual as PhoneApplicationFrame).Navigate(new Uri("/FriendRequestPage.xaml", UriKind.RelativeOrAbsolute));
+                            (Application.Current.RootVisual as PhoneApplicationFrame).Navigate(new Uri("/FriendRequestsPage.xaml", UriKind.RelativeOrAbsolute));
                         }
                     }
                 });

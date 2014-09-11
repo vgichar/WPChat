@@ -38,7 +38,7 @@
                 <TextBlock Name="tbStats" Margin="9,-7,0,0" Style="{StaticResource PhoneTextSmallStyle}"/>
             </StackPanel>
             <StackPanel Grid.Column="1" Grid.Row="0" >
-                <toolkit:ListPicker Margin="55,10,10, 0" Width="150" BorderThickness="1" SelectionChanged="ListPicker_SelectionChanged" SelectedIndex="{Binding Converter={StaticResource ActiveStatusConverter}}">
+                <toolkit:ListPicker Name="lpStatus" Margin="55,10,10, 0" Width="150" BorderThickness="1" SelectionChanged="ListPicker_SelectionChanged" SelectedIndex="{Binding Converter={StaticResource ActiveStatusConverter}}">
                     <toolkit:ListPickerItem Tag="Online">
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                             <Button Template="{StaticResource StatusIndicatorControl}" Background="Green"></Button>

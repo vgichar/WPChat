@@ -78,7 +78,7 @@ namespace WPChat
             
             foreach (StatusIndicator si in Enum.GetValues(typeof(StatusIndicator)))
             {
-                if (si.ToString() == (lp.SelectedItem as ListPickerItem).Tag.ToString())
+                if ((lp.SelectedItem as ListPickerItem) != null && si.ToString() == (lp.SelectedItem as ListPickerItem).Tag.ToString())
                 {
                     App.User.ChangeStatus(si);
                 }
@@ -88,6 +88,11 @@ namespace WPChat
         private void ApplicationBarMenuItem_Click(object sender, EventArgs e)
         {
             NavigationService.Navigate(new Uri("/FriendRequestsPage.xaml", UriKind.RelativeOrAbsolute));
+        }
+
+        private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            lpStatus.SelectedIndex = new ActiveStatusConverter().exec();
         }
     }
 }

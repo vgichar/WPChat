@@ -9,6 +9,7 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using WPChat.ViewModels;
 using System.Collections.ObjectModel;
+using WPChat.Resources;
 
 namespace WPChat
 {
@@ -69,11 +70,16 @@ namespace WPChat
 
             foreach (StatusIndicator si in Enum.GetValues(typeof(StatusIndicator)))
             {
-                if (si.ToString() == (lp.SelectedItem as ListPickerItem).Tag.ToString())
+                if ((lp.SelectedItem as ListPickerItem) != null && si.ToString() == (lp.SelectedItem as ListPickerItem).Tag.ToString())
                 {
                     App.User.ChangeStatus(si);
                 }
             }
+        }
+
+        private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            lpStatus.SelectedIndex = new ActiveStatusConverter().exec();
         }
     }
 }

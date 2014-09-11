@@ -144,7 +144,7 @@ namespace WPChat
 
             foreach (StatusIndicator si in Enum.GetValues(typeof(StatusIndicator)))
             {
-                if (si.ToString() == (lp.SelectedItem as ListPickerItem).Tag.ToString())
+                if ((lp.SelectedItem as ListPickerItem)!=null && si.ToString() == (lp.SelectedItem as ListPickerItem).Tag.ToString())
                 {
                     App.User.ChangeStatus(si);
                 }

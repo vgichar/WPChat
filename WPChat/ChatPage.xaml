@@ -77,8 +77,8 @@
             <phone:LongListSelector Name="llsMessages" Grid.Row="0" ItemsSource="{Binding Path=Messages}" >
                 <phone:LongListSelector.ItemTemplate>
                     <DataTemplate>
-                        <Border HorizontalAlignment="{Binding Path=From, Converter={StaticResource MessagesAlignmentConverter}}" Margin="10" Width="250" BorderBrush="Aqua" BorderThickness="1">
-                            <StackPanel Loaded="StackPanel_Loaded">
+                        <Border HorizontalAlignment="{Binding Path=From, Converter={StaticResource MessagesAlignmentConverter}}" Margin="10" Width="210" BorderBrush="#333333" BorderThickness="1" Background="#111111">
+                            <StackPanel Loaded="StackPanel_Loaded" Margin="5">
                                 <TextBlock Name="tbFrom" Text="{Binding Path=From}" Style="{StaticResource PhoneTextSubtleStyle}" TextWrapping="Wrap"/>
                                 <TextBlock Name="tbText" Text="{Binding Path=Text}" Style="{StaticResource PhoneTextNormalStyle}" TextWrapping="Wrap"/>
                             </StackPanel>

@@ -8,6 +8,7 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using WPChat.ViewModels;
+using WPChat.Resources;
 
 namespace WPChat
 {
@@ -139,12 +140,13 @@ namespace WPChat
                 RoomItem ri = App.User.Rooms.FirstOrDefault(x => x.Name == name);
                 if (ri == null)
                 {
-                    MessageBoxResult mbr = MessageBox.Show(string.Format("Add \"{0}\" to your favorite rooms list?", name), "Add room", MessageBoxButton.OKCancel);
+                    MessageBoxResult mbr = MessageBox.Show(string.Format("Enter room: \"{0}\" ?", name), "Add room", MessageBoxButton.OKCancel);
 
                     if (mbr == MessageBoxResult.OK)
                     {
                         App.User.AddRoom(name);
                     }
+                    
                 }
                 else
                 {
@@ -165,6 +167,11 @@ namespace WPChat
                     App.User.ChangeStatus(si);
                 }
             }
+        }
+
+        private void PhoneApplicationPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            lpStatus.SelectedIndex = new ActiveStatusConverter().exec();
         }
     }
 }

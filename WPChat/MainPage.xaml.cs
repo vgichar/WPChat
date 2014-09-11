@@ -32,8 +32,9 @@ namespace WPChat
             base.OnNavigatedTo(e);
 
             // clear BackStack
-            while (NavigationService.BackStack.Count() > 0)
+/*            while (NavigationService.BackStack.Count() > 0)
                 NavigationService.RemoveBackEntry();
+ */
         }
 
         // On list item click => open chat room

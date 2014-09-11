@@ -65,7 +65,7 @@ namespace WPChat
                         App.IsolatedStorageSettings["Password"] = password;
                     }
 
-                    NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.RelativeOrAbsolute));
+                    NavigationService.Navigate(new Uri("/Menu.xaml", UriKind.RelativeOrAbsolute));
                 }
                 // login failed
                 else

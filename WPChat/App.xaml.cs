@@ -20,7 +20,7 @@ namespace WPChat
 {
     public partial class App : Application
     {
-        private string _serverUrl = "http://192.168.0.104:8080/";
+        private string _serverUrl = "http://localhost:37655/";
         private string _hubName = "OwnerUserHub";
 
         public static OwnerUserItem User = new OwnerUserItem();
@@ -425,7 +425,7 @@ namespace WPChat
                                     {
                                         Dispatcher.BeginInvoke(() =>
                                         {
-                                            (Application.Current.RootVisual as PhoneApplicationFrame).Navigate(new Uri("/MainPage.xaml", UriKind.RelativeOrAbsolute));
+                                            (Application.Current.RootVisual as PhoneApplicationFrame).Navigate(new Uri("/Menu.xaml", UriKind.RelativeOrAbsolute));
                                         });
                                     }
                                 });

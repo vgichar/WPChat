@@ -96,9 +96,6 @@
             <shell:ApplicationBarIconButton  Text="fav rooms" IconUri="/Assets/AppBar/like.png" Click="ApplicationBarIconButton_ClickRooms"/>
             <shell:ApplicationBarIconButton  Text="logout" IconUri="/Assets/AppBar/logout.png" Click="ApplicationBarIconButton_ClickLogout"/>
             <shell:ApplicationBarIconButton  Text="exit" IconUri="/Assets/AppBar/stop.png" Click="ApplicationBarIconButton_ClickExit"/>
-            <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem  Text="FriendRequestPage" Click="ApplicationBarMenuItem_Click"/>
-            </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>

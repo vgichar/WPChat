@@ -27,10 +27,6 @@ namespace WPChat
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
-            // clear BackStack
-            while (NavigationService.BackStack.Count() > 0)
-                NavigationService.RemoveBackEntry();
         }
 
         // On list item click => open chat room

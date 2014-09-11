@@ -30,6 +30,11 @@ namespace WPChat
             type = NavigationContext.QueryString["Type"] == "User" ? DataContextType.User : DataContextType.Room;
             name = NavigationContext.QueryString["Name"];
 
+            if (App.UnseenMessages.Contains(name))
+            {
+                App.UnseenMessages.Remove(name);
+            }
+
             this.tbTitle.Text = name;
             if (type == DataContextType.Room)
             {

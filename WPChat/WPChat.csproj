@@ -197,14 +197,22 @@
   <ItemGroup>
     <Content Include="Assets\AlignmentGrid.png" />
     <Content Include="Assets\AppBar\add.png" />
+    <Content Include="Assets\AppBar\adduser.appbar.user.add.png" />
+    <Content Include="Assets\AppBar\add_chat_roomicon_59381.png" />
     <Content Include="Assets\AppBar\back.png" />
+    <Content Include="Assets\AppBar\chat.appbar.chat.png" />
+    <Content Include="Assets\AppBar\chat_rooms.icon.png" />
     <Content Include="Assets\AppBar\delete.png" />
+    <Content Include="Assets\AppBar\details.appbar.book.list.png" />
+    <Content Include="Assets\AppBar\details.png" />
     <Content Include="Assets\AppBar\edit.png" />
     <Content Include="Assets\AppBar\favs.addto.png" />
     <Content Include="Assets\AppBar\favs.png" />
     <Content Include="Assets\AppBar\feature.search.png" />
+    <Content Include="Assets\AppBar\friends.appbar.people.multiple.png" />
     <Content Include="Assets\AppBar\like.png" />
     <Content Include="Assets\AppBar\logout.png" />
+    <Content Include="Assets\AppBar\rooms.png" />
     <Content Include="Assets\AppBar\share.png" />
     <Content Include="Assets\AppBar\stop.png" />
     <Content Include="Assets\ApplicationIcon.png">

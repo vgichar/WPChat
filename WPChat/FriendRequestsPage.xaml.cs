@@ -56,5 +56,30 @@ namespace WPChat
         {
             lpStatus.SelectedIndex = new ActiveStatusConverter().exec();
         }
+
+
+        private void ApplicationBarIconButton_ClickLogout(object sender, EventArgs e)
+        {
+            App.User.Logout();
+
+            NavigationService.Navigate(new Uri("/LoginPage.xaml", UriKind.RelativeOrAbsolute));
+        }
+
+        private void ApplicationBarIconButton_ClickExit(object sender, EventArgs e)
+        {
+            App.ExitApp();
+        }
+
+        private void ApplicationBarIconButton_ClickFriends(object sender, EventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/MainPage.xaml", UriKind.RelativeOrAbsolute));
+        }
+
+        private void ApplicationBarIconButton_ClickRooms(object sender, EventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/RoomsPage.xaml", UriKind.RelativeOrAbsolute));
+        }
+
+
     }
 }

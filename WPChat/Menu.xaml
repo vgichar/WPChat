@@ -85,7 +85,7 @@
                 Rooms
             </Button>
             <Button x:Name="Requests_btn" Grid.Row="2" Margin="15, 10" Click="Requests_btn_Click">
-                Friend Request
+                <TextBlock Name="fReq" Text="FriendRequest(s)"></TextBlock>
             </Button>
         </Grid>
     </Grid>

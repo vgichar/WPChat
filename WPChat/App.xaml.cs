@@ -335,7 +335,7 @@ namespace WPChat
                 Dispatcher.BeginInvoke(() =>
                 {
                     App.User.Friends.Add(friend);
-
+                    
                     foreach (RoomItem ri in friend.Rooms)
                     {
                         RoomItem room = App.User.Rooms.FirstOrDefault(x => x.Name == ri.Name);

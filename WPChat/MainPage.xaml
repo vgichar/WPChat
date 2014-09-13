@@ -92,8 +92,8 @@
 
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsMenuEnabled="True" >
-            <shell:ApplicationBarIconButton  Text="add friend" IconUri="/Assets/AppBar/favs.addto.png" Click="ApplicationBarIconButton_ClickAddFriend"/>
-            <shell:ApplicationBarIconButton  Text="fav rooms" IconUri="/Assets/AppBar/like.png" Click="ApplicationBarIconButton_ClickRooms"/>
+            <shell:ApplicationBarIconButton  Text="add friend" IconUri="/Assets/AppBar/adduser.appbar.user.add.png" Click="ApplicationBarIconButton_ClickAddFriend"/>
+            <shell:ApplicationBarIconButton  Text="rooms" IconUri="/Assets/AppBar/rooms.png" Click="ApplicationBarIconButton_ClickRooms"/>
             <shell:ApplicationBarIconButton  Text="logout" IconUri="/Assets/AppBar/logout.png" Click="ApplicationBarIconButton_ClickLogout"/>
             <shell:ApplicationBarIconButton  Text="exit" IconUri="/Assets/AppBar/stop.png" Click="ApplicationBarIconButton_ClickExit"/>
         </shell:ApplicationBar>

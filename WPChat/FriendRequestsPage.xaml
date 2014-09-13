@@ -93,5 +93,12 @@
 
         </Grid>
     </Grid>
-
+    <phone:PhoneApplicationPage.ApplicationBar>
+        <shell:ApplicationBar IsMenuEnabled="True">
+            <shell:ApplicationBarIconButton  Text="friends" IconUri="/Assets/AppBar/friends.appbar.people.multiple.png" Click="ApplicationBarIconButton_ClickFriends"/>
+            <shell:ApplicationBarIconButton  Text="rooms" IconUri="/Assets/AppBar/rooms.png" Click="ApplicationBarIconButton_ClickRooms"/>
+            <shell:ApplicationBarIconButton  Text="logout" IconUri="/Assets/AppBar/logout.png" Click="ApplicationBarIconButton_ClickLogout"/>
+            <shell:ApplicationBarIconButton  Text="exit" IconUri="/Assets/AppBar/stop.png" Click="ApplicationBarIconButton_ClickExit"/>
+        </shell:ApplicationBar>
+    </phone:PhoneApplicationPage.ApplicationBar>
 </phone:PhoneApplicationPage>

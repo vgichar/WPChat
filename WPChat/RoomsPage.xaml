@@ -92,7 +92,7 @@
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar IsMenuEnabled="True">
             <shell:ApplicationBarIconButton  Text="add room" IconUri="/Assets/AppBar/add.png" Click="ApplicationBarIconButton_ClickAddRoom"/>
-            <shell:ApplicationBarIconButton  Text="friends" IconUri="/Assets/AppBar/favs.png" Click="ApplicationBarIconButton_ClickFriends"/>
+            <shell:ApplicationBarIconButton  Text="friends" IconUri="/Assets/AppBar/friends.appbar.people.multiple.png" Click="ApplicationBarIconButton_ClickFriends"/>
             <shell:ApplicationBarIconButton  Text="logout" IconUri="/Assets/AppBar/logout.png" Click="ApplicationBarIconButton_ClickLogout"/>
             <shell:ApplicationBarIconButton  Text="exit" IconUri="/Assets/AppBar/stop.png" Click="ApplicationBarIconButton_ClickExit"/>
         </shell:ApplicationBar>

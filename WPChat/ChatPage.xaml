@@ -100,7 +100,7 @@
     
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar>
-            <shell:ApplicationBarIconButton  Text="details" IconUri="/Assets/AppBar/edit.png" Click="ApplicationBarIconButton_ClickDetails"/>
+            <shell:ApplicationBarIconButton  Text="details" IconUri="/Assets/AppBar/details.png" Click="ApplicationBarIconButton_ClickDetails"/>
             <shell:ApplicationBarIconButton  Text="delete" IconUri="/Assets/AppBar/delete.png" Click="ApplicationBarIconButton_ClickDelete"/>
             <shell:ApplicationBarIconButton  Text="logout" IconUri="/Assets/AppBar/logout.png" Click="ApplicationBarIconButton_ClickLogout"/>
             <shell:ApplicationBarIconButton  Text="exit" IconUri="/Assets/AppBar/stop.png" Click="ApplicationBarIconButton_ClickExit"/>

@@ -111,7 +111,7 @@
     </Grid>
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar>
-            <shell:ApplicationBarIconButton Text="chat" IconUri="/Assets/AppBar/share.png" Click="ApplicationBarIconButton_ClickChat" />
+            <shell:ApplicationBarIconButton Text="chat" IconUri="/Assets/AppBar/chat.appbar.chat.png" Click="ApplicationBarIconButton_ClickChat" />
             <shell:ApplicationBarIconButton Text="delete" IconUri="/Assets/AppBar/delete.png" Click="ApplicationBarIconButton_ClickDelete" />
             <shell:ApplicationBarIconButton Text="logout" IconUri="/Assets/AppBar/logout.png" Click="ApplicationBarIconButton_ClickLogout" />
             <shell:ApplicationBarIconButton Text="exit" IconUri="/Assets/AppBar/stop.png" Click="ApplicationBarIconButton_ClickExit" />

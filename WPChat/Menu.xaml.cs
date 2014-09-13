@@ -26,6 +26,8 @@ namespace WPChat
         {
             base.OnNavigatedTo(e);
 
+            fReq.Text = "FriendRequest(s): " + App.User.FriendRequests.Count;
+
             // clear BackStack
             while (NavigationService.BackStack.Count() > 0)
                 NavigationService.RemoveBackEntry();

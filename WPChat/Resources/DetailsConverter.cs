@@ -15,8 +15,7 @@ namespace WPChat.Resources
         {
             string name = value.ToString();
             var ui = App.User.Friends.FirstOrDefault(x => x.Username == name);
-            var ri = App.User.Rooms.FirstOrDefault(x => x.Name == name);
-            if (ui != null || ri != null)
+            if (ui != null)
             {
                 return Visibility.Visible;
             }

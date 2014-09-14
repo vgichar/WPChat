@@ -104,11 +104,14 @@ namespace WPChat
             }
             else
             {
-                MessageBoxResult mbr = MessageBox.Show(string.Format("Add \"{0}\" to your favorite rooms list?", b.Tag as string), "Add room", MessageBoxButton.OKCancel);
+                MessageBoxResult mbr = MessageBox.Show(string.Format("Enter room: \"{0}\" ?", b.Tag as string), "Add room", MessageBoxButton.OKCancel);
 
                 if (mbr == MessageBoxResult.OK)
                 {
-                    App.User.AddRoom(b.Tag as string, () => { });
+                    App.User.AddRoom(b.Tag as string, () =>
+                    {
+                        NavigationService.Navigate(new Uri(string.Format("/ChatPage.xaml?Name={0}&Type={1}", Uri.EscapeUriString(b.Tag as string), Uri.EscapeUriString(DataContextType.Room.ToString())), UriKind.RelativeOrAbsolute));
+                    });
                 }
             }
         }

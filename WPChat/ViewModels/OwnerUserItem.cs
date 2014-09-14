@@ -276,7 +276,7 @@ namespace WPChat.ViewModels
 
         public async void AddRoom(string name, Action callback)
         {
-            RoomItem ri = await App.Hub.Invoke<RoomItem>("GetRoomByName", name);
+            RoomItem ri = await App.Hub.Invoke<RoomItem>("AddRoom", name);
             App.Dispatcher.BeginInvoke(() =>
             {
                 foreach (UserItem ui in ri.Users)

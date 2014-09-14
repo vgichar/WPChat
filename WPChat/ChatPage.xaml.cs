@@ -38,6 +38,7 @@ namespace WPChat
             this.tbTitle.Text = name;
             if (type == DataContextType.Room)
             {
+                btnStatusIndicator.Visibility = System.Windows.Visibility.Collapsed;
                 foreach (RoomItem ri in App.User.Rooms) 
                 {
                     if (ri.Name == name) 

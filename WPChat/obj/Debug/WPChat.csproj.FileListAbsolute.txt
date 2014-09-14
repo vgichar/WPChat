@@ -265,3 +265,4 @@ C:\Users\Vojdan\Documents\Visual Studio 2013\Projects\WPChat\WPChat\obj\Debug\WP
 C:\Users\Vojdan\Documents\Visual Studio 2013\Projects\WPChat\WPChat\obj\Debug\WPChat.dll
 C:\Users\Vojdan\Documents\Visual Studio 2013\Projects\WPChat\WPChat\obj\Debug\WPChat.pdb
 C:\Users\Vojdan\Documents\Visual Studio 2013\Projects\WPChat\WPChat\obj\Debug\XapCacheFile.xml
+C:\Users\Vojdan\Documents\Visual Studio 2013\Projects\WPChat\WPChat\obj\Debug\WPChat.csprojResolveAssemblyReference.cache

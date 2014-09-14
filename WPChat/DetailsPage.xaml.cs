@@ -45,6 +45,7 @@ namespace WPChat
             }
             else
             {
+                btnStatusIndicator.Visibility = System.Windows.Visibility.Collapsed;
                 foreach (RoomItem ri in App.User.Rooms)
                 {
                     if (name == ri.Name)
@@ -53,26 +54,6 @@ namespace WPChat
                         this.DataContext = ri;
                         break;
                     }
-                }
-            }
-        }
-
-        void abib_Click(object sender, EventArgs e)
-        {
-            if (type == DataContextType.User)
-            {
-                MessageBoxResult mbr = MessageBox.Show(string.Format("Add \"{0}\" to your friends list?", name), "Add user", MessageBoxButton.OKCancel);
-                if (mbr == MessageBoxResult.OK)
-                {
-                    App.User.SendFriendRequest(name);
-                }
-            }
-            else
-            {
-                MessageBoxResult mbr = MessageBox.Show(string.Format("Add \"{0}\" to your favorite rooms list?", name), "Add room", MessageBoxButton.OKCancel);
-                if (mbr == MessageBoxResult.OK)
-                {
-                    App.User.AddRoom(name, () => { });
                 }
             }
         }

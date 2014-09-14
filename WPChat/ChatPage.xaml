@@ -34,7 +34,10 @@
             <!--TitlePanel contains the name of the application and page title-->
             <StackPanel Grid.Row="0" Margin="12,17,0,28" Grid.ColumnSpan="2">
                 <TextBlock Text="{Binding Path=LocalizedResources.ApplicationTitle,  Source={StaticResource LocalizedStrings}}" Style="{StaticResource PhoneTextNormalStyle}"/>
-                <TextBlock Name="tbTitle" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button Name="btnStatusIndicator" Template="{StaticResource StatusIndicatorControl}" Background="{Binding Path=Status, Converter={StaticResource StatusConverter}}" Visibility="{Binding Path=Username, Converter={StaticResource DetailsConverter}}"/>
+                    <TextBlock Name="tbTitle" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+                </StackPanel>
                 <TextBlock Name="tbStats" Margin="9,-7,0,0" Style="{StaticResource PhoneTextSmallStyle}"/>
             </StackPanel>
             <StackPanel Grid.Column="1" Grid.Row="0" >
@@ -97,7 +100,7 @@
             </Grid>
         </Grid>
     </Grid>
-    
+
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar>
             <shell:ApplicationBarIconButton  Text="details" IconUri="/Assets/AppBar/details.png" Click="ApplicationBarIconButton_ClickDetails"/>

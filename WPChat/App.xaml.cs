@@ -20,7 +20,7 @@ namespace WPChat
 {
     public partial class App : Application
     {
-        private string _serverUrl = "http://192.168.0.101:8080/";
+        private string _serverUrl = "http://localhost:37655/";
         private string _hubName = "OwnerUserHub";
 
         public static OwnerUserItem User = new OwnerUserItem();
@@ -354,14 +354,16 @@ namespace WPChat
                 {
                     if (memberName != App.User.Username)
                     {
-                        RoomItem ri = App.User.Rooms.First(x => x.Name == roomName);
+                        RoomItem ri = App.User.Rooms.FirstOrDefault(x => x.Name == roomName);
                         UserItem ui = App.User.Friends.FirstOrDefault(x => x.Username == memberName);
                         if (ui == null)
                         {
                             ui = new UserItem() { Username = memberName };
                         }
 
-                        ri.Users.Add(ui);
+                        if(ri != null){
+                            ri.Users.Add(ui);
+                        }
                     }
                 });
             });
@@ -370,14 +372,17 @@ namespace WPChat
             {
                 Dispatcher.BeginInvoke(() =>
                 {
-                    UserItem ui = App.User.Friends.First(x => x.Username == memberName);
+                    UserItem ui = App.User.Friends.FirstOrDefault(x => x.Username == memberName);
                     RoomItem ri = App.User.Rooms.FirstOrDefault(x => x.Name == roomName);
                     if (ri == null)
                     {
                         ri = new RoomItem() { Name = roomName };
                     }
 
-                    ui.Rooms.Add(ri);
+                    if (ui != null)
+                    {
+                        ui.Rooms.Add(ri);
+                    }
                 });
             });
 

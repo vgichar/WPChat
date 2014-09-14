@@ -29,12 +29,16 @@ namespace WPChat
             if (mbr == MessageBoxResult.OK)
             {
                 App.User.AcceptFriendRequest(name);
-                App.User.FriendRequests.Remove(name);
             }
             else
             {
                 App.User.DenyFriendRequest(name);
-                App.User.FriendRequests.Remove(name);
+            }
+
+            App.User.FriendRequests.Remove(name);
+            if (App.User.FriendRequests.Count == 0)
+            {
+                this.NavigationService.GoBack();
             }
         }
 

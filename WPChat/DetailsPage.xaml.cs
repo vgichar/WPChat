@@ -64,7 +64,6 @@ namespace WPChat
                 MessageBoxResult mbr = MessageBox.Show(string.Format("Add \"{0}\" to your friends list?", name), "Add user", MessageBoxButton.OKCancel);
                 if (mbr == MessageBoxResult.OK)
                 {
-                    Console.WriteLine(name);
                     App.User.SendFriendRequest(name);
                 }
             }
@@ -73,7 +72,7 @@ namespace WPChat
                 MessageBoxResult mbr = MessageBox.Show(string.Format("Add \"{0}\" to your favorite rooms list?", name), "Add room", MessageBoxButton.OKCancel);
                 if (mbr == MessageBoxResult.OK)
                 {
-                    App.User.AddRoom(name);
+                    App.User.AddRoom(name, () => { });
                 }
             }
         }
@@ -144,9 +143,12 @@ namespace WPChat
 
                     if (mbr == MessageBoxResult.OK)
                     {
-                        App.User.AddRoom(name);
+                        App.User.AddRoom(name, () =>
+                        {
+                            NavigationService.Navigate(new Uri(string.Format("/ChatPage.xaml?Name={0}&Type={1}", Uri.EscapeUriString(name), Uri.EscapeUriString(DataContextType.Room.ToString())), UriKind.RelativeOrAbsolute));
+                        });
                     }
-                    
+
                 }
                 else
                 {

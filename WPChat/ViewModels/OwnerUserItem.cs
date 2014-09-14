@@ -274,17 +274,32 @@ namespace WPChat.ViewModels
             });
         }
 
-        public async void AddRoom(string name)
+        public async void AddRoom(string name, Action callback)
         {
-            await App.Hub.Invoke("AddRoom", name);
+            RoomItem ri = await App.Hub.Invoke<RoomItem>("GetRoomByName", name);
             App.Dispatcher.BeginInvoke(() =>
             {
-                RoomItem ri = new RoomItem();
-                GetRoomByName(name, ri, () =>
+                foreach (UserItem ui in ri.Users)
                 {
-                    Rooms.Add(ri);
-                });
+                    foreach (UserItem oui in Friends)
+                    {
+                        if (ui.Username == oui.Username)
+                        {
+                            oui.Rooms.Remove(oui.Rooms.First(x => x.Name == ri.Name));
+                            oui.Rooms.Add(ri);
+
+                            ui.Username = oui.Username;
+                            ui.Status = oui.Status;
+                            ui.Messages = oui.Messages;
+                            ui.Rooms = oui.Rooms;
+                        }
+                    }
+                }
+
+                Rooms.Add(ri);
             });
+
+            callback.Invoke();
         }
 
         public async void SendMessage(MessageItem mi)

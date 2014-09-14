@@ -103,6 +103,7 @@ namespace WPChat
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
+                btnLogin.Focus();
                 btnLogin_Tap(sender, new System.Windows.Input.GestureEventArgs());
             }
         }
@@ -112,6 +113,7 @@ namespace WPChat
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {
+                btnLogin.Focus();
                 btnLogin_Tap(sender, new System.Windows.Input.GestureEventArgs());
             }
         }

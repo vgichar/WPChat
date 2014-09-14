@@ -108,7 +108,7 @@ namespace WPChat
 
                 if (mbr == MessageBoxResult.OK)
                 {
-                    App.User.AddRoom(b.Tag as string);
+                    App.User.AddRoom(b.Tag as string, () => { });
                 }
             }
         }

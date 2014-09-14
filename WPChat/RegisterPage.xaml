@@ -41,7 +41,7 @@
             <TextBox Name="tbUsername" Text="{Binding Path=Username}" Grid.Row="1" KeyDown="tbUsername_KeyDown" />
             <TextBlock Grid.Row="2" Text="Password:"/>
             <PasswordBox Name="tbPassword" Password="{Binding Path=Password}" Grid.Row="3" KeyDown="tbPassword_KeyDown" />
-            <Button Grid.Row="4" Grid.Column="1" Content="Register" Click="registerButton_Click"/>
+            <Button Name="btnRegister" Grid.Row="4" Grid.Column="1" Content="Register" Click="registerButton_Click"/>
         </Grid>
     </Grid>
     <phone:PhoneApplicationPage.ApplicationBar>

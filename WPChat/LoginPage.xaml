@@ -47,7 +47,7 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <CheckBox Name="ckbRemember" Grid.Column="0" Content="Remember me" IsChecked="true"/>
-                <Button Grid.Column="1" Content="Login" Tap="btnLogin_Tap"/>
+                <Button Name="btnLogin" Grid.Column="1" Content="Login" Tap="btnLogin_Tap"/>
             </Grid>
         </Grid>
     </Grid>
